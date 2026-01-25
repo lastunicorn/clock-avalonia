@@ -1,0 +1,109 @@
+using Avalonia;
+using Avalonia.Media;
+
+namespace DustInTheWind.ClockAvalonia.Shapes;
+
+public class FancySweepHand : HandBase
+{
+    #region CircleRadius StyledProperty
+
+    public static readonly StyledProperty<double> CircleRadiusProperty = AvaloniaProperty.Register<FancySweepHand, double>(
+        nameof(CircleRadius),
+        defaultValue: 7.0);
+
+    public double CircleRadius
+    {
+        get => GetValue(CircleRadiusProperty);
+        set => SetValue(CircleRadiusProperty, value);
+    }
+
+    #endregion
+
+    #region CircleOffset StyledProperty
+
+    public static readonly StyledProperty<double> CircleOffsetProperty = AvaloniaProperty.Register<FancySweepHand, double>(
+        nameof(CircleOffset),
+        defaultValue: 24.0);
+
+    public double CircleOffset
+    {
+        get => GetValue(CircleOffsetProperty);
+        set => SetValue(CircleOffsetProperty, value);
+    }
+
+    #endregion
+
+    #region TailLength StyledProperty
+
+    public static readonly StyledProperty<double> TailLengthProperty = AvaloniaProperty.Register<FancySweepHand, double>(
+        nameof(TailLength),
+        defaultValue: 14.0);
+
+    public double TailLength
+    {
+        get => GetValue(TailLengthProperty);
+        set => SetValue(TailLengthProperty, value);
+    }
+
+    #endregion
+
+    static FancySweepHand()
+    {
+        CircleRadiusProperty.Changed.AddClassHandler<FancySweepHand>((hand, e) => hand.InvalidateLayout());
+        CircleOffsetProperty.Changed.AddClassHandler<FancySweepHand>((hand, e) => hand.InvalidateLayout());
+        TailLengthProperty.Changed.AddClassHandler<FancySweepHand>((hand, e) => hand.InvalidateLayout());
+    }
+
+    private Point mainLineStartPoint;
+    private Point mainLineEndPoint;
+    private Point circleCenter;
+    private double circleRadius;
+    private Point tipLineStartPoint;
+    private Point tipLineEndPoint;
+
+    protected override bool OnRendering(ClockDrawingContext context)
+    {
+        if (StrokePen == null)
+            return false;
+
+        return base.OnRendering(context);
+    }
+
+    protected override void CalculateLayout(ClockDrawingContext context)
+    {
+        base.CalculateLayout(context);
+
+        double radius = context.ClockRadius;
+        double calculatedLength = radius * (Length / 100.0);
+        double calculatedCircleOffset = radius * (CircleOffset / 100.0);
+        double calculatedCircleRadius = radius * (CircleRadius / 100.0);
+        double calculatedTailLength = radius * (TailLength / 100.0);
+
+        double calculatedCircleCenterY = -calculatedLength + calculatedCircleOffset;
+
+        mainLineStartPoint = new Point(0, calculatedTailLength);
+        mainLineEndPoint = new Point(0, calculatedCircleCenterY + calculatedCircleRadius);
+
+        circleCenter = new Point(0, calculatedCircleCenterY);
+        circleRadius = calculatedCircleRadius;
+
+        tipLineStartPoint = new Point(0, calculatedCircleCenterY - calculatedCircleRadius);
+        tipLineEndPoint = new Point(0, -calculatedLength);
+    }
+
+    public override void DoRender(ClockDrawingContext context)
+    {
+        DrawingPlan.Create(context.DrawingContext)
+            .WithTransform(() =>
+            {
+                double angleDegrees = CalculateHandAngle(context.Time);
+                return new RotateTransform(angleDegrees);
+            })
+            .Draw(dc =>
+            {
+                dc.DrawLine(StrokePen, mainLineStartPoint, mainLineEndPoint);
+                dc.DrawEllipse(null, StrokePen, circleCenter, circleRadius, circleRadius);
+                dc.DrawLine(StrokePen, tipLineStartPoint, tipLineEndPoint);
+            });
+    }
+}
