@@ -1,5 +1,7 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 
@@ -20,15 +22,42 @@ public class CornerButton : Button
 
     #endregion
 
-    #region Data Styled Property
+    #region CornerRadius Styled Property
 
-    public static readonly StyledProperty<Geometry> DataProperty =
-        AvaloniaProperty.Register<CornerButton, Geometry>(nameof(Data));
+    public static readonly StyledProperty<double> CornerRadiusProperty = AvaloniaProperty.Register<CornerButton, double>(
+        nameof(CornerRadius),
+        0.1);
 
-    public Geometry Data
+    public double CornerRadius
     {
-        get => GetValue(DataProperty);
-        set => SetValue(DataProperty, value);
+        get => GetValue(CornerRadiusProperty);
+        set => SetValue(CornerRadiusProperty, value);
+    }
+
+    #endregion
+
+    #region Geometry Styled Property
+
+    public static readonly StyledProperty<Geometry> GeometryProperty = AvaloniaProperty.Register<CornerButton, Geometry>(
+        nameof(Geometry));
+
+    public Geometry Geometry
+    {
+        get => GetValue(GeometryProperty);
+        private set => SetValue(GeometryProperty, value);
+    }
+
+    #endregion
+
+    #region GeometryTransform Styled Property
+
+    public static readonly StyledProperty<Transform> GeometryTransformProperty = AvaloniaProperty.Register<CornerButton, Transform>(
+        nameof(GeometryTransform));
+
+    public Transform GeometryTransform
+    {
+        get => GetValue(GeometryTransformProperty);
+        set => SetValue(GeometryTransformProperty, value);
     }
 
     #endregion
@@ -83,33 +112,53 @@ public class CornerButton : Button
 
     public CornerButton()
     {
+        CornerRadiusProperty.Changed.AddClassHandler<CornerButton>((cornerButton, e) => cornerButton.OnCornerRadiusChanged(e));
+
+        UpdateVisualElements();
+    }
+
+    private void OnCornerRadiusChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        UpdateVisualElements();
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+
         UpdateVisualElements();
     }
 
     private void UpdateVisualElements()
     {
+        Geometry = new CornerShape()
+        {
+            CornerRadius = CornerRadius
+        };
+
         switch (Corner)
         {
             case CornerType.TopLeft:
-                Data = Geometry.Parse("M 0,1 A 2,2 0 0 1 1,0 L 0,0 Z");
+                GeometryTransform = null;
                 ContentHorizontalAlignment = HorizontalAlignment.Left;
                 ContentVerticalAlignment = VerticalAlignment.Top;
+
                 break;
 
             case CornerType.TopRight:
-                Data = Geometry.Parse("M 0,0 A 2,2 0 0 1 1,1 L 1,0 Z");
+                GeometryTransform = new RotateTransform(90, 0.5, 0.5);
                 ContentHorizontalAlignment = HorizontalAlignment.Right;
                 ContentVerticalAlignment = VerticalAlignment.Top;
                 break;
 
             case CornerType.BottomLeft:
-                Data = Geometry.Parse("M 0,0 A 2,2 0 0 0 1,1 L 0,1 Z");
+                GeometryTransform = new RotateTransform(270, 0.5, 0.5);
                 ContentHorizontalAlignment = HorizontalAlignment.Left;
                 ContentVerticalAlignment = VerticalAlignment.Bottom;
                 break;
 
             case CornerType.BottomRight:
-                Data = Geometry.Parse("M 0,1 A 2,2 0 0 0 1,0 L 1,1 Z");
+                GeometryTransform = new RotateTransform(180, 0.5, 0.5);
                 ContentHorizontalAlignment = HorizontalAlignment.Right;
                 ContentVerticalAlignment = VerticalAlignment.Bottom;
                 break;

@@ -45,6 +45,7 @@
 			Cursor="Hand"
 			Click="CloseButton_Click"
 			Corner="TopRight"
+			CornerRadius="0.05"
 			HoverBackground="Red">
 
 			<!-- X Icon -->
