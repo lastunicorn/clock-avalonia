@@ -12,7 +12,7 @@ namespace DustInTheWind.ClockAvalonia;
 
 public class AnalogClock : TemplatedControl
 {
-    private ShapeCanvas shapeCanvas;
+    private Dial dial;
 
     #region Shapes StyledProperty
 
@@ -99,7 +99,7 @@ public class AnalogClock : TemplatedControl
     {
         base.OnApplyTemplate(e);
 
-        shapeCanvas = e.NameScope.Find<ShapeCanvas>("PART_ShapeCanvas");
+        dial = e.NameScope.Find<Dial>("PART_Dial");
 
         ITimeProvider currentTimeProvider = TimeProvider;
         if (currentTimeProvider != null)
@@ -130,17 +130,17 @@ public class AnalogClock : TemplatedControl
 
     private void OnKeepProportionsChanged(AvaloniaPropertyChangedEventArgs _)
     {
-        shapeCanvas?.InvalidateVisual();
+        dial?.InvalidateVisual();
     }
 
     private void OnTimeProviderChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.OldValue is ITimeProvider oldTimeProvider)
-            oldTimeProvider.TimeChanged -= HandleTimeChanged;
+            oldTimeProvider.Tick -= HandleTimeChanged;
 
         if (e.NewValue is ITimeProvider newTimeProvider)
         {
-            newTimeProvider.TimeChanged += HandleTimeChanged;
+            newTimeProvider.Tick += HandleTimeChanged;
             UpdateDisplayedTime(newTimeProvider.LastValue);
         }
     }
@@ -156,18 +156,18 @@ public class AnalogClock : TemplatedControl
         }
     }
 
-    private void HandleTimeChanged(object sender, TimeChangedEventArgs e)
+    private void HandleTimeChanged(object sender, TickEventArgs e)
     {
         UpdateDisplayedTime(e.Time);
     }
 
     private void UpdateDisplayedTime(TimeSpan time)
     {
-        if (shapeCanvas != null)
+        if (dial != null)
         {
             Dispatcher.UIThread.Post(() =>
             {
-                shapeCanvas.Time = time;
+                dial.Time = time;
             });
         }
     }

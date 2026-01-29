@@ -1,10 +1,10 @@
 namespace DustInTheWind.ClockAvalonia.TimeProviders;
 
-public class TimeChangedEventArgs : EventArgs
+public class TickEventArgs : EventArgs
 {
     public TimeSpan Time { get; }
 
-    public TimeChangedEventArgs(TimeSpan time)
+    public TickEventArgs(TimeSpan time)
     {
         Time = time;
     }

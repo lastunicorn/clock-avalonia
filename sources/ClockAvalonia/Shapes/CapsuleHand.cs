@@ -35,11 +35,21 @@ public class CapsuleHand : HandBase
 
     static CapsuleHand()
     {
-        WidthProperty.Changed.AddClassHandler<CapsuleHand>((hand, e) => hand.InvalidateLayout());
-        TailLengthProperty.Changed.AddClassHandler<CapsuleHand>((hand, e) => hand.InvalidateLayout());
+        _ = WidthProperty.Changed.AddClassHandler<CapsuleHand>(HandleWidthChanged);
+        _ = TailLengthProperty.Changed.AddClassHandler<CapsuleHand>(HandleTailLengthChanged);
     }
 
-    private PathGeometry? handGeometry;
+    private static void HandleWidthChanged(CapsuleHand capsuleHand, AvaloniaPropertyChangedEventArgs e)
+    {
+        capsuleHand.InvalidateLayout();
+    }
+
+    private static void HandleTailLengthChanged(CapsuleHand capsuleHand, AvaloniaPropertyChangedEventArgs e)
+    {
+        capsuleHand.InvalidateLayout();
+    }
+
+    private PathGeometry handGeometry;
 
     protected override bool OnRendering(ClockDrawingContext context)
     {
@@ -82,7 +92,10 @@ public class CapsuleHand : HandBase
             IsLargeArc = false
         });
 
-        capsuleFigure.Segments.Add(new LineSegment { Point = new Point(halfWidth, bottomY) });
+        capsuleFigure.Segments.Add(new LineSegment
+        {
+            Point = new Point(halfWidth, bottomY)
+        });
 
         capsuleFigure.Segments.Add(new ArcSegment
         {
@@ -92,7 +105,10 @@ public class CapsuleHand : HandBase
             IsLargeArc = false
         });
 
-        capsuleFigure.Segments.Add(new LineSegment { Point = new Point(-halfWidth, topY) });
+        capsuleFigure.Segments.Add(new LineSegment
+        {
+            Point = new Point(-halfWidth, topY)
+        });
 
         PathGeometry handGeometry = new();
         handGeometry.Figures.Add(capsuleFigure);

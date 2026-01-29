@@ -65,13 +65,13 @@ public class Ticks : RimBase
         return new Pen(StrokeBrush, StrokeThickness, lineCap: lineCap);
     }
 
-    protected override void RenderItem(DrawingContext drawingContext, int index)
+    protected override void RenderItem(ClockDrawingContext context, int index)
     {
         double actualLength = radius * Length / 100.0;
 
         Point startPoint = new(0, -actualLength / 2);
         Point endPoint = new(0, actualLength / 2);
 
-        drawingContext.DrawLine(StrokePen, startPoint, endPoint);
+        context.DrawingContext.DrawLine(StrokePen, startPoint, endPoint);
     }
 }

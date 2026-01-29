@@ -3,11 +3,11 @@ using Avalonia.Media;
 
 namespace DustInTheWind.ClockAvalonia.Shapes;
 
-public class SimpleHand : HandBase
+public class SimpleLineHand : HandBase
 {
     #region TailLength StyledProperty
 
-    public static readonly StyledProperty<double> TailLengthProperty = AvaloniaProperty.Register<SimpleHand, double>(
+    public static readonly StyledProperty<double> TailLengthProperty = AvaloniaProperty.Register<SimpleLineHand, double>(
         nameof(TailLength),
         defaultValue: 0.0);
 
@@ -21,7 +21,7 @@ public class SimpleHand : HandBase
 
     #region PinDiameter StyledProperty
 
-    public static readonly StyledProperty<double> PinDiameterProperty = AvaloniaProperty.Register<SimpleHand, double>(
+    public static readonly StyledProperty<double> PinDiameterProperty = AvaloniaProperty.Register<SimpleLineHand, double>(
         nameof(PinDiameter),
         defaultValue: 4.0);
 
@@ -83,9 +83,10 @@ public class SimpleHand : HandBase
         if (PinDiameter <= 0)
             return;
 
-        double pinRadius = radius * (PinDiameter / 100.0) / 2;
+        double calculatedPinDiameter = radius * (PinDiameter / 100.0);
+        double calculatedPinRadius = calculatedPinDiameter / 2;
 
         Point center = new(0, 0);
-        drawingContext.DrawEllipse(StrokeBrush, null, center, pinRadius, pinRadius);
+        drawingContext.DrawEllipse(StrokeBrush, null, center, calculatedPinRadius, calculatedPinRadius);
     }
 }

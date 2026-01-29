@@ -9,8 +9,8 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <controls:ShapeCanvas
-                        Name="PART_ShapeCanvas"
+                    <controls:Dial
+                        Name="PART_Dial"
                         Shapes="{TemplateBinding Shapes}"
                         KeepProportions="{TemplateBinding KeepProportions}"/>
                 </Panel>

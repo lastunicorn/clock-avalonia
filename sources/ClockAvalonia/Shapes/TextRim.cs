@@ -76,7 +76,7 @@ public class TextRim : RimBase
         return base.OnRendering(context);
     }
 
-    protected override void RenderItem(DrawingContext drawingContext, int index)
+    protected override void RenderItem(ClockDrawingContext context, int index)
     {
         string[] texts = Texts;
 
@@ -103,6 +103,6 @@ public class TextRim : RimBase
         double textY = -formattedText.Height / 2;
 
         Point textPosition = new(textX, textY);
-        drawingContext.DrawText(formattedText, textPosition);
+        context.DrawingContext.DrawText(formattedText, textPosition);
     }
 }

@@ -79,8 +79,8 @@ public abstract class Shape : AvaloniaObject
 
     static Shape()
     {
-        StrokeBrushProperty.Changed.AddClassHandler<Shape>((shape, e) => shape.HandleStrokeChanged(e));
-        StrokeThicknessProperty.Changed.AddClassHandler<Shape>((shape, e) => shape.HandleStrokeThicknessChanged(e));
+        _ = StrokeBrushProperty.Changed.AddClassHandler<Shape>((shape, e) => shape.HandleStrokeBrushChanged(e));
+        _ = StrokeThicknessProperty.Changed.AddClassHandler<Shape>((shape, e) => shape.HandleStrokeThicknessChanged(e));
     }
 
     private IPen strokePen;
@@ -108,7 +108,7 @@ public abstract class Shape : AvaloniaObject
         return new Pen(StrokeBrush, StrokeThickness);
     }
 
-    private void HandleStrokeChanged(AvaloniaPropertyChangedEventArgs _)
+    private void HandleStrokeBrushChanged(AvaloniaPropertyChangedEventArgs _)
     {
         strokePen = null;
         isStrokePenCreated = false;

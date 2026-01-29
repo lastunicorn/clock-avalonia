@@ -128,7 +128,7 @@ public abstract class RimBase : Shape
                     .WithTransform(() => new RotateTransform(angleDegrees))
                     .WithTransform(() => new TranslateTransform(0, -itemRadius))
                     .WithTransform(() => CreateOrientationTransform(index))
-                    .Draw(cd => RenderItem(cd, index));
+                    .Draw(cd => RenderItem(context, index));
             }
 
             index++;
@@ -159,5 +159,5 @@ public abstract class RimBase : Shape
         }
     }
 
-    protected abstract void RenderItem(DrawingContext drawingContext, int index);
+    protected abstract void RenderItem(ClockDrawingContext context, int index);
 }

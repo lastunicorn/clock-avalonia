@@ -7,13 +7,13 @@ using DustInTheWind.ClockAvalonia.Shapes;
 
 namespace DustInTheWind.ClockAvalonia;
 
-public class ShapeCanvas : Control
+public class Dial : Control
 {
     private NotifyCollectionChangedEventHandler collectionChangedHandler;
 
     #region Shapes StyledProperty
 
-    public static readonly StyledProperty<ObservableCollection<Shape>> ShapesProperty = AvaloniaProperty.Register<ShapeCanvas, ObservableCollection<Shape>>(
+    public static readonly StyledProperty<ObservableCollection<Shape>> ShapesProperty = AvaloniaProperty.Register<Dial, ObservableCollection<Shape>>(
         nameof(Shapes),
         defaultValue: null);
 
@@ -27,7 +27,7 @@ public class ShapeCanvas : Control
 
     #region KeepProperties StyledProperty
 
-    public static readonly StyledProperty<bool> KeepProportionsProperty = AvaloniaProperty.Register<ShapeCanvas, bool>(
+    public static readonly StyledProperty<bool> KeepProportionsProperty = AvaloniaProperty.Register<Dial, bool>(
         nameof(KeepProportions),
         defaultValue: false);
 
@@ -41,7 +41,7 @@ public class ShapeCanvas : Control
 
     #region Time StyledProperty
 
-    public static readonly StyledProperty<TimeSpan> TimeProperty = AvaloniaProperty.Register<ShapeCanvas, TimeSpan>(
+    public static readonly StyledProperty<TimeSpan> TimeProperty = AvaloniaProperty.Register<Dial, TimeSpan>(
         nameof(Time),
         defaultValue: TimeSpan.Zero);
 
@@ -53,13 +53,13 @@ public class ShapeCanvas : Control
 
     #endregion
 
-    static ShapeCanvas()
+    static Dial()
     {
-        ShapesProperty.Changed.AddClassHandler<ShapeCanvas>((canvas, e) => canvas.OnShapesChanged(e));
-        KeepProportionsProperty.Changed.AddClassHandler<ShapeCanvas>((canvas, e) => canvas.InvalidateVisual());
-        TimeProperty.Changed.AddClassHandler<ShapeCanvas>((canvas, e) => canvas.InvalidateVisual());
-        
-        AffectsRender<ShapeCanvas>(ShapesProperty, KeepProportionsProperty, TimeProperty);
+        ShapesProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.OnShapesChanged(e));
+        KeepProportionsProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.InvalidateVisual());
+        TimeProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.InvalidateVisual());
+
+        AffectsRender<Dial>(ShapesProperty, KeepProportionsProperty, TimeProperty);
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -67,7 +67,7 @@ public class ShapeCanvas : Control
         double width = double.IsInfinity(availableSize.Width) ? 200 : availableSize.Width;
         double height = double.IsInfinity(availableSize.Height) ? 200 : availableSize.Height;
         double size = Math.Min(width, height);
-        
+
         return new Size(size, size);
     }
 
@@ -124,9 +124,6 @@ public class ShapeCanvas : Control
         };
 
         foreach (Shape shape in Shapes)
-        {
-            if (shape != null && shape.IsVisible)
-                shape.Render(clockDrawingContext);
-        }
+            shape?.Render(clockDrawingContext);
     }
 }

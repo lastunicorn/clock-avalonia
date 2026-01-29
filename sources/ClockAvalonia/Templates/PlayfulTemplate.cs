@@ -63,7 +63,7 @@ public class PlayfulTemplate : ClockTemplate
             FillBrush = Brushes.LimeGreen
         };
 
-        yield return new SimpleHand
+        yield return new SimpleLineHand
         {
             Name = "Second Hand",
             TimeComponent = TimeComponent.Second,
