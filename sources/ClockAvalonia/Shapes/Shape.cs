@@ -5,7 +5,7 @@ namespace DustInTheWind.ClockAvalonia.Shapes;
 
 public abstract class Shape : AvaloniaObject
 {
-    private bool isLayoutValid;
+    private bool isCacheValid;
 
     #region Name StyledProperty
 
@@ -77,55 +77,81 @@ public abstract class Shape : AvaloniaObject
 
     #endregion
 
+    #region NameChanged Event
+
+    /// <summary>
+    /// Event raised when the <see cref="Name"/> property is changed.
+    /// </summary>
+    public event EventHandler NameChanged;
+
+    /// <summary>
+    /// Raises the <see cref="NameChanged"/> event.
+    /// </summary>
+    /// <param name="e">An <see cref="EventArgs"/> object that contains the event data.</param>
+    protected virtual void OnNameChanged(EventArgs e)
+    {
+        NameChanged?.Invoke(this, e);
+    }
+
+    #endregion
+
+    #region Changed Event
+
+    /// <summary>
+    /// Event raised when any property that impacts the way the shape looks changed.
+    /// </summary>
+    public event EventHandler Changed;
+
+    /// <summary>
+    /// Raises the <see cref="Changed"/> event.
+    /// </summary>
+    /// <param name="e">An <see cref="EventArgs"/> object that contains the event data.</param>
+    protected virtual void OnChanged(EventArgs e)
+    {
+        Changed?.Invoke(this, e);
+    }
+
+    #endregion
+
     static Shape()
     {
+        _ = NameProperty.Changed.AddClassHandler<Shape>((shape, e) => shape.HandleNameChanged(e));
         _ = StrokeBrushProperty.Changed.AddClassHandler<Shape>((shape, e) => shape.HandleStrokeBrushChanged(e));
         _ = StrokeThicknessProperty.Changed.AddClassHandler<Shape>((shape, e) => shape.HandleStrokeThicknessChanged(e));
     }
 
-    private IPen strokePen;
-    private bool isStrokePenCreated;
-
-    protected IPen StrokePen
+    private void HandleNameChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        get
-        {
-            if (!isStrokePenCreated)
-            {
-                strokePen = CreateStrokePen();
-                isStrokePenCreated = true;
-            }
-
-            return strokePen;
-        }
+        OnNameChanged(EventArgs.Empty);
     }
 
-    protected virtual IPen CreateStrokePen()
+    protected virtual void OnCreateStrokePen(CreateStrokePenEventArgs e)
     {
-        if (StrokeThickness <= 0 || StrokeBrush == null)
-            return null;
-
-        return new Pen(StrokeBrush, StrokeThickness);
     }
 
     private void HandleStrokeBrushChanged(AvaloniaPropertyChangedEventArgs _)
     {
-        strokePen = null;
-        isStrokePenCreated = false;
+        InvalidateCache();
+        OnChanged(EventArgs.Empty);
     }
 
     private void HandleStrokeThicknessChanged(AvaloniaPropertyChangedEventArgs _)
     {
-        strokePen = null;
-        isStrokePenCreated = false;
-        InvalidateLayout();
+        InvalidateCache();
+        OnChanged(EventArgs.Empty);
     }
 
-    public event EventHandler NameChanged;
-
-    protected virtual void OnNameChanged(EventArgs e)
+    protected Pen CreateStrokePen()
     {
-        NameChanged?.Invoke(this, e);
+        if (StrokeThickness <= 0 || StrokeBrush == null)
+            return null;
+
+        Pen pen = new(StrokeBrush, StrokeThickness);
+
+        CreateStrokePenEventArgs args = new(pen);
+        OnCreateStrokePen(args);
+
+        return pen;
     }
 
     public void Render(ClockDrawingContext context)
@@ -137,10 +163,10 @@ public abstract class Shape : AvaloniaObject
         if (!allowToRender)
             return;
 
-        if (!isLayoutValid)
+        if (!isCacheValid)
         {
-            CalculateLayout(context);
-            isLayoutValid = true;
+            CalculateCache(context);
+            isCacheValid = true;
         }
 
         DoRender(context);
@@ -150,13 +176,13 @@ public abstract class Shape : AvaloniaObject
 
     protected virtual bool OnRendering(ClockDrawingContext context)
     {
-        if (FillBrush == null && StrokePen == null)
+        if (FillBrush == null && (StrokeBrush == null || StrokeThickness <= 0))
             return false;
 
         return true;
     }
 
-    protected virtual void CalculateLayout(ClockDrawingContext context)
+    protected virtual void CalculateCache(ClockDrawingContext context)
     {
     }
 
@@ -166,17 +192,8 @@ public abstract class Shape : AvaloniaObject
     {
     }
 
-    protected void InvalidateLayout()
+    protected void InvalidateCache()
     {
-        isLayoutValid = false;
-    }
-
-    protected virtual void InvalidateDrawingTools()
-    {
-        if (isStrokePenCreated)
-        {
-            strokePen = null;
-            isStrokePenCreated = false;
-        }
+        isCacheValid = false;
     }
 }

@@ -41,15 +41,16 @@ public class CapsuleHand : HandBase
 
     private static void HandleWidthChanged(CapsuleHand capsuleHand, AvaloniaPropertyChangedEventArgs e)
     {
-        capsuleHand.InvalidateLayout();
+        capsuleHand.InvalidateCache();
     }
 
     private static void HandleTailLengthChanged(CapsuleHand capsuleHand, AvaloniaPropertyChangedEventArgs e)
     {
-        capsuleHand.InvalidateLayout();
+        capsuleHand.InvalidateCache();
     }
 
     private PathGeometry handGeometry;
+    private Pen strokePen;
 
     protected override bool OnRendering(ClockDrawingContext context)
     {
@@ -59,11 +60,12 @@ public class CapsuleHand : HandBase
         return base.OnRendering(context);
     }
 
-    protected override void CalculateLayout(ClockDrawingContext context)
+    protected override void CalculateCache(ClockDrawingContext context)
     {
-        base.CalculateLayout(context);
+        base.CalculateCache(context);
 
         handGeometry = CreateHandGeometry(context);
+        strokePen = CreateStrokePen();
     }
 
     private PathGeometry CreateHandGeometry(ClockDrawingContext context)
@@ -126,7 +128,7 @@ public class CapsuleHand : HandBase
             })
             .Draw(dc =>
             {
-                context.DrawingContext.DrawGeometry(FillBrush, StrokePen, handGeometry);
+                context.DrawingContext.DrawGeometry(FillBrush, strokePen, handGeometry);
             });
     }
 }

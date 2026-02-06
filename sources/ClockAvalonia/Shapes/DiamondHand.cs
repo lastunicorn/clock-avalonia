@@ -35,11 +35,12 @@ public class DiamondHand : HandBase
 
     static DiamondHand()
     {
-        WidthProperty.Changed.AddClassHandler<DiamondHand>((hand, e) => hand.InvalidateLayout());
-        TailLengthProperty.Changed.AddClassHandler<DiamondHand>((hand, e) => hand.InvalidateLayout());
+        WidthProperty.Changed.AddClassHandler<DiamondHand>((hand, e) => hand.InvalidateCache());
+        TailLengthProperty.Changed.AddClassHandler<DiamondHand>((hand, e) => hand.InvalidateCache());
     }
 
-    private StreamGeometry? diamondGeometry;
+    private StreamGeometry diamondGeometry;
+    private Pen strokePen;
 
     protected override bool OnRendering(ClockDrawingContext context)
     {
@@ -49,11 +50,12 @@ public class DiamondHand : HandBase
         return base.OnRendering(context);
     }
 
-    protected override void CalculateLayout(ClockDrawingContext context)
+    protected override void CalculateCache(ClockDrawingContext context)
     {
-        base.CalculateLayout(context);
+        base.CalculateCache(context);
 
         diamondGeometry = CreateDiamondGeometry(context);
+        strokePen = CreateStrokePen();
     }
 
     private StreamGeometry CreateDiamondGeometry(ClockDrawingContext context)
@@ -86,7 +88,7 @@ public class DiamondHand : HandBase
             })
             .Draw(dc =>
             {
-                context.DrawingContext.DrawGeometry(FillBrush, StrokePen, diamondGeometry);
+                context.DrawingContext.DrawGeometry(FillBrush, strokePen, diamondGeometry);
             });
     }
 }

@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Media;
 
 namespace DustInTheWind.ClockAvalonia.Shapes;
 
@@ -20,33 +21,33 @@ public class Pin : Shape
 
     static Pin()
     {
-        DiameterProperty.Changed.AddClassHandler<Pin>((pin, e) => pin.InvalidateLayout());
+        DiameterProperty.Changed.AddClassHandler<Pin>((pin, e) => pin.InvalidateCache());
     }
 
     private Point pinCenter;
     private double pinRadius;
+    private Pen strokePen;
 
     protected override bool OnRendering(ClockDrawingContext context)
     {
-        if (FillBrush == null && StrokePen == null)
-            return false;
-
         if (Diameter <= 0)
             return false;
 
         return base.OnRendering(context);
     }
 
-    protected override void CalculateLayout(ClockDrawingContext context)
+    protected override void CalculateCache(ClockDrawingContext context)
     {
-        base.CalculateLayout(context);
+        base.CalculateCache(context);
 
         pinRadius = context.ClockRadius * (Diameter / 100.0) / 2;
         pinCenter = new Point(0, 0);
+
+        strokePen = CreateStrokePen();
     }
 
     public override void DoRender(ClockDrawingContext context)
     {
-        context.DrawingContext.DrawEllipse(FillBrush, StrokePen, pinCenter, pinRadius, pinRadius);
+        context.DrawingContext.DrawEllipse(FillBrush, strokePen, pinCenter, pinRadius, pinRadius);
     }
 }

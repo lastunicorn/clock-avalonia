@@ -34,19 +34,13 @@ public class NibHand : HandBase
     #endregion
 
     private PathGeometry nibGeometry;
+    private Pen strokePen;
 
-    protected override bool OnRendering(ClockDrawingContext context)
+    protected override void CalculateCache(ClockDrawingContext context)
     {
-        if (FillBrush == null && StrokePen == null)
-            return false;
-
-        return base.OnRendering(context);
-    }
-
-    protected override void CalculateLayout(ClockDrawingContext context)
-    {
-        base.CalculateLayout(context);
+        base.CalculateCache(context);
         nibGeometry = CreateNibGeometry();
+        strokePen = CreateStrokePen();
     }
 
     private static PathGeometry CreateNibGeometry()
@@ -215,7 +209,7 @@ public class NibHand : HandBase
             })
             .Draw(dc =>
             {
-                dc.DrawGeometry(FillBrush, StrokePen, nibGeometry);
+                dc.DrawGeometry(FillBrush, strokePen, nibGeometry);
             });
     }
 }

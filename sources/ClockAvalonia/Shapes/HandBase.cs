@@ -49,7 +49,7 @@ public abstract class HandBase : Shape, IHand
 
     static HandBase()
     {
-        LengthProperty.Changed.AddClassHandler<HandBase>((hand, e) => hand.InvalidateLayout());
+        LengthProperty.Changed.AddClassHandler<HandBase>((hand, e) => hand.InvalidateCache());
     }
 
     protected override bool OnRendering(ClockDrawingContext context)

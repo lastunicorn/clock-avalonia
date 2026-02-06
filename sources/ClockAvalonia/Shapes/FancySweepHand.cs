@@ -49,9 +49,9 @@ public class FancySweepHand : HandBase
 
     static FancySweepHand()
     {
-        CircleRadiusProperty.Changed.AddClassHandler<FancySweepHand>((hand, e) => hand.InvalidateLayout());
-        CircleOffsetProperty.Changed.AddClassHandler<FancySweepHand>((hand, e) => hand.InvalidateLayout());
-        TailLengthProperty.Changed.AddClassHandler<FancySweepHand>((hand, e) => hand.InvalidateLayout());
+        CircleRadiusProperty.Changed.AddClassHandler<FancySweepHand>((hand, e) => hand.InvalidateCache());
+        CircleOffsetProperty.Changed.AddClassHandler<FancySweepHand>((hand, e) => hand.InvalidateCache());
+        TailLengthProperty.Changed.AddClassHandler<FancySweepHand>((hand, e) => hand.InvalidateCache());
     }
 
     private Point mainLineStartPoint;
@@ -60,18 +60,11 @@ public class FancySweepHand : HandBase
     private double circleRadius;
     private Point tipLineStartPoint;
     private Point tipLineEndPoint;
+    private Pen strokePen;
 
-    protected override bool OnRendering(ClockDrawingContext context)
+    protected override void CalculateCache(ClockDrawingContext context)
     {
-        if (StrokePen == null)
-            return false;
-
-        return base.OnRendering(context);
-    }
-
-    protected override void CalculateLayout(ClockDrawingContext context)
-    {
-        base.CalculateLayout(context);
+        base.CalculateCache(context);
 
         double radius = context.ClockRadius;
         double calculatedLength = radius * (Length / 100.0);
@@ -89,6 +82,8 @@ public class FancySweepHand : HandBase
 
         tipLineStartPoint = new Point(0, calculatedCircleCenterY - calculatedCircleRadius);
         tipLineEndPoint = new Point(0, -calculatedLength);
+
+        strokePen = CreateStrokePen();
     }
 
     public override void DoRender(ClockDrawingContext context)
@@ -101,9 +96,9 @@ public class FancySweepHand : HandBase
             })
             .Draw(dc =>
             {
-                dc.DrawLine(StrokePen, mainLineStartPoint, mainLineEndPoint);
-                dc.DrawEllipse(null, StrokePen, circleCenter, circleRadius, circleRadius);
-                dc.DrawLine(StrokePen, tipLineStartPoint, tipLineEndPoint);
+                dc.DrawLine(strokePen, mainLineStartPoint, mainLineEndPoint);
+                dc.DrawEllipse(null, strokePen, circleCenter, circleRadius, circleRadius);
+                dc.DrawLine(strokePen, tipLineStartPoint, tipLineEndPoint);
             });
     }
 }

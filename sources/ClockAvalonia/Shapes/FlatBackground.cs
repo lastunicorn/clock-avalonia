@@ -11,12 +11,21 @@ public class FlatBackground : Shape
         StrokeThicknessProperty.OverrideDefaultValue<FlatBackground>(0.0);
     }
 
+    private Pen strokePen;
+
     protected override bool OnRendering(ClockDrawingContext context)
     {
-        if (FillBrush == null && StrokePen == null)
+        if (FillBrush == null && strokePen == null)
             return false;
 
         return base.OnRendering(context);
+    }
+
+    protected override void CalculateCache(ClockDrawingContext context)
+    {
+        base.CalculateCache(context);
+
+        strokePen = CreateStrokePen();
     }
 
     public override void DoRender(ClockDrawingContext context)
@@ -24,6 +33,6 @@ public class FlatBackground : Shape
         Point center = new Point(0, 0);
         double backgroundRadius = (context.ClockDiameter - StrokeThickness) / 2;
 
-        context.DrawingContext.DrawEllipse(FillBrush, StrokePen, center, backgroundRadius, backgroundRadius);
+        context.DrawingContext.DrawEllipse(FillBrush, strokePen, center, backgroundRadius, backgroundRadius);
     }
 }

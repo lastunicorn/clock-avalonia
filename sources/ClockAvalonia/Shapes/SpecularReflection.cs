@@ -11,6 +11,8 @@ public class SpecularReflection : Shape
         StrokeThicknessProperty.OverrideDefaultValue<SpecularReflection>(0.0);
     }
 
+    private Pen strokePen;
+
     public SpecularReflection()
     {
         RadialGradientBrush brush = new()
@@ -25,12 +27,11 @@ public class SpecularReflection : Shape
         FillBrush = brush;
     }
 
-    protected override bool OnRendering(ClockDrawingContext context)
+    protected override void CalculateCache(ClockDrawingContext context)
     {
-        if (FillBrush == null && StrokePen == null)
-            return false;
+        base.CalculateCache(context);
 
-        return base.OnRendering(context);
+        strokePen = CreateStrokePen();
     }
 
     public override void DoRender(ClockDrawingContext context)
@@ -50,7 +51,7 @@ public class SpecularReflection : Shape
         using (context.DrawingContext.PushTransform(rotation))
         using (context.DrawingContext.PushTransform(Matrix.CreateTranslation(center.X, center.Y)))
         {
-            context.DrawingContext.DrawEllipse(FillBrush, StrokePen, center, radiusX, radiusY);
+            context.DrawingContext.DrawEllipse(FillBrush, strokePen, center, radiusX, radiusY);
         }
     }
 }

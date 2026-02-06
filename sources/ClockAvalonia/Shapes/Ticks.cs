@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Media;
+using DustInTheWind.ClockAvalonia.Utils;
 
 namespace DustInTheWind.ClockAvalonia.Shapes;
 
@@ -39,39 +40,46 @@ public class Ticks : RimBase
         OffsetAngleProperty.OverrideDefaultValue<Ticks>(6.0);
         DistanceFromEdgeProperty.OverrideDefaultValue<Ticks>(6.0);
         OrientationProperty.OverrideDefaultValue<Ticks>(RimItemOrientation.FaceCenter);
-        RoundEndsProperty.Changed.AddClassHandler<Ticks>((ticks, e) => ticks.InvalidateDrawingTools());
+        RoundEndsProperty.Changed.AddClassHandler<Ticks>((ticks, e) => ticks.InvalidateCache());
     }
 
-    private double radius;
+    private Pen strokePen;
 
-    protected override bool OnRendering(ClockDrawingContext context)
+    protected override void CalculateCache(ClockDrawingContext context)
     {
-        if (StrokePen == null)
-            return false;
+        base.CalculateCache(context);
 
-        radius = context.ClockRadius;
-        return base.OnRendering(context);
+        strokePen = CreateStrokePen();
     }
 
-    protected override IPen CreateStrokePen()
+    protected override void OnCreateStrokePen(CreateStrokePenEventArgs e)
     {
-        if (StrokeThickness <= 0 || StrokeBrush == null)
-            return null;
+        base.OnCreateStrokePen(e);
 
-        PenLineCap lineCap = RoundEnds
+        e.StrokePen.LineCap = RoundEnds
             ? PenLineCap.Round
             : PenLineCap.Flat;
-
-        return new Pen(StrokeBrush, StrokeThickness, lineCap: lineCap);
     }
+
+    //protected override IPen CreateStrokePen()
+    //{
+    //    if (StrokeThickness <= 0 || StrokeBrush == null)
+    //        return null;
+
+    //    PenLineCap lineCap = RoundEnds
+    //        ? PenLineCap.Round
+    //        : PenLineCap.Flat;
+
+    //    return new Pen(StrokeBrush, StrokeThickness, lineCap: lineCap);
+    //}
 
     protected override void RenderItem(ClockDrawingContext context, int index)
     {
-        double actualLength = radius * Length / 100.0;
+        double actualLength = Length.RelativeTo(context.ClockRadius);
 
         Point startPoint = new(0, -actualLength / 2);
         Point endPoint = new(0, actualLength / 2);
 
-        context.DrawingContext.DrawLine(StrokePen, startPoint, endPoint);
+        context.DrawingContext.DrawLine(strokePen, startPoint, endPoint);
     }
 }

@@ -33,12 +33,11 @@ public class SimpleLineHand : HandBase
 
     #endregion
 
-    protected override IPen CreateStrokePen()
+    protected override void OnCreateStrokePen(CreateStrokePenEventArgs e)
     {
-        if (StrokeThickness <= 0 || StrokeBrush == null)
-            return null;
+        base.OnCreateStrokePen(e);
 
-        return new Pen(StrokeBrush, StrokeThickness, lineCap: PenLineCap.Round);
+        e.StrokePen.LineCap = PenLineCap.Round;
     }
 
     public override void DoRender(ClockDrawingContext context)
@@ -60,7 +59,9 @@ public class SimpleLineHand : HandBase
 
     private void DrawHandLine(DrawingContext drawingContext, double radius)
     {
-        if (StrokePen == null)
+        Pen strokePen = CreateStrokePen();
+
+        if (strokePen == null)
             return;
 
         if (Length <= 0 && TailLength <= 0)
@@ -72,7 +73,7 @@ public class SimpleLineHand : HandBase
         Point startPoint = new(0, tailLength);
         Point endPoint = new(0, -handLength);
 
-        drawingContext.DrawLine(StrokePen, startPoint, endPoint);
+        drawingContext.DrawLine(strokePen, startPoint, endPoint);
     }
 
     private void DrawPin(DrawingContext drawingContext, double radius)

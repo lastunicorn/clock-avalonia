@@ -95,6 +95,8 @@ public class FancyBackground : Shape
         StrokeThicknessProperty.OverrideDefaultValue<FancyBackground>(0.0);
     }
 
+    private Pen strokePen;
+
     private static IBrush CreateDefaultFaceBrush()
     {
         LinearGradientBrush brush = new()
@@ -117,6 +119,13 @@ public class FancyBackground : Shape
         return base.OnRendering(context);
     }
 
+    protected override void CalculateCache(ClockDrawingContext context)
+    {
+        base.CalculateCache(context);
+
+        strokePen = CreateStrokePen();
+    }
+
     public override void DoRender(ClockDrawingContext context)
     {
         Point center = new(0, 0);
@@ -135,6 +144,6 @@ public class FancyBackground : Shape
             context.DrawingContext.DrawEllipse(InnerRimBrush, null, center, innerRimRadius, innerRimRadius);
 
         if (FillBrush != null)
-            context.DrawingContext.DrawEllipse(FillBrush, StrokePen, center, faceRadius, faceRadius);
+            context.DrawingContext.DrawEllipse(FillBrush, strokePen, center, faceRadius, faceRadius);
     }
 }

@@ -98,20 +98,20 @@ public class TextShape : Shape
     static TextShape()
     {
         NameProperty.OverrideDefaultValue<TextShape>(DefaultName);
-        TextProperty.Changed.AddClassHandler<TextShape>((shape, e) => shape.InvalidateLayout());
-        FontFamilyProperty.Changed.AddClassHandler<TextShape>((shape, e) => shape.InvalidateLayout());
-        FontSizeProperty.Changed.AddClassHandler<TextShape>((shape, e) => shape.InvalidateLayout());
-        FontWeightProperty.Changed.AddClassHandler<TextShape>((shape, e) => shape.InvalidateLayout());
-        MaxWidthProperty.Changed.AddClassHandler<TextShape>((shape, e) => shape.InvalidateLayout());
-        LocationProperty.Changed.AddClassHandler<TextShape>((shape, e) => shape.InvalidateLayout());
+        TextProperty.Changed.AddClassHandler<TextShape>((shape, e) => shape.InvalidateCache());
+        FontFamilyProperty.Changed.AddClassHandler<TextShape>((shape, e) => shape.InvalidateCache());
+        FontSizeProperty.Changed.AddClassHandler<TextShape>((shape, e) => shape.InvalidateCache());
+        FontWeightProperty.Changed.AddClassHandler<TextShape>((shape, e) => shape.InvalidateCache());
+        MaxWidthProperty.Changed.AddClassHandler<TextShape>((shape, e) => shape.InvalidateCache());
+        LocationProperty.Changed.AddClassHandler<TextShape>((shape, e) => shape.InvalidateCache());
     }
 
     private FormattedText? formattedText;
     private Point textPosition;
 
-    protected override void CalculateLayout(ClockDrawingContext context)
+    protected override void CalculateCache(ClockDrawingContext context)
     {
-        base.CalculateLayout(context);
+        base.CalculateCache(context);
 
         Typeface typeface = new(FontFamily, FontStyle.Normal, FontWeight);
 
