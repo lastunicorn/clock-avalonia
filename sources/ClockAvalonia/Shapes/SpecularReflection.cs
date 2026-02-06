@@ -34,7 +34,7 @@ public class SpecularReflection : Shape
         strokePen = CreateStrokePen();
     }
 
-    public override void DoRender(ClockDrawingContext context)
+    protected override void DoRender(ClockDrawingContext context)
     {
         double x = -context.ClockRadius + (context.ClockRadius * 50) / 100 - 10;
         double y = -context.ClockRadius + (context.ClockRadius * 50) / 100 + 20;

@@ -46,7 +46,7 @@ public class Pin : Shape
         strokePen = CreateStrokePen();
     }
 
-    public override void DoRender(ClockDrawingContext context)
+    protected override void DoRender(ClockDrawingContext context)
     {
         context.DrawingContext.DrawEllipse(FillBrush, strokePen, pinCenter, pinRadius, pinRadius);
     }

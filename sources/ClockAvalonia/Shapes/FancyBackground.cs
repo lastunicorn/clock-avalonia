@@ -126,7 +126,7 @@ public class FancyBackground : Shape
         strokePen = CreateStrokePen();
     }
 
-    public override void DoRender(ClockDrawingContext context)
+    protected override void DoRender(ClockDrawingContext context)
     {
         Point center = new(0, 0);
         double clockRadius = context.ClockRadius;

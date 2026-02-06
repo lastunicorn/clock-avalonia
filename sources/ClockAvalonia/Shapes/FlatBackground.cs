@@ -28,9 +28,9 @@ public class FlatBackground : Shape
         strokePen = CreateStrokePen();
     }
 
-    public override void DoRender(ClockDrawingContext context)
+    protected override void DoRender(ClockDrawingContext context)
     {
-        Point center = new Point(0, 0);
+        Point center = new(0, 0);
         double backgroundRadius = (context.ClockDiameter - StrokeThickness) / 2;
 
         context.DrawingContext.DrawEllipse(FillBrush, strokePen, center, backgroundRadius, backgroundRadius);

@@ -186,7 +186,7 @@ public abstract class Shape : AvaloniaObject
     {
     }
 
-    public abstract void DoRender(ClockDrawingContext context);
+    protected abstract void DoRender(ClockDrawingContext context);
 
     protected virtual void OnRendered(ClockDrawingContext context)
     {

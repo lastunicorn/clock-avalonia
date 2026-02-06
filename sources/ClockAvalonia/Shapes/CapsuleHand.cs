@@ -118,17 +118,8 @@ public class CapsuleHand : HandBase
         return handGeometry;
     }
 
-    public override void DoRender(ClockDrawingContext context)
+    protected override void DoRenderHand(ClockDrawingContext context)
     {
-        DrawingPlan.Create(context.DrawingContext)
-            .WithTransform(() =>
-            {
-                double angleDegrees = CalculateHandAngle(context.Time);
-                return new RotateTransform(angleDegrees);
-            })
-            .Draw(dc =>
-            {
-                context.DrawingContext.DrawGeometry(FillBrush, strokePen, handGeometry);
-            });
+        context.DrawingContext.DrawGeometry(FillBrush, strokePen, handGeometry);
     }
 }

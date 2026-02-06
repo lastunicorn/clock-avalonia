@@ -78,17 +78,8 @@ public class DiamondHand : HandBase
         return geometry;
     }
 
-    public override void DoRender(ClockDrawingContext context)
+    protected override void DoRenderHand(ClockDrawingContext context)
     {
-        DrawingPlan.Create(context.DrawingContext)
-            .WithTransform(() =>
-            {
-                double angleDegrees = CalculateHandAngle(context.Time);
-                return new RotateTransform(angleDegrees);
-            })
-            .Draw(dc =>
-            {
-                context.DrawingContext.DrawGeometry(FillBrush, strokePen, diamondGeometry);
-            });
+        context.DrawingContext.DrawGeometry(FillBrush, strokePen, diamondGeometry);
     }
 }

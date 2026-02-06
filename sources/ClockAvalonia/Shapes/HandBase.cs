@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Avalonia;
 using Avalonia.Media;
 
@@ -23,7 +24,7 @@ public abstract class HandBase : Shape, IHand
 
     public static readonly StyledProperty<TimeComponent> TimeComponentProperty = AvaloniaProperty.Register<HandBase, TimeComponent>(
         nameof(TimeComponent),
-        defaultValue: TimeComponent.Second);
+        defaultValue: TimeComponent.None);
 
     public TimeComponent TimeComponent
     {
@@ -49,7 +50,25 @@ public abstract class HandBase : Shape, IHand
 
     static HandBase()
     {
-        LengthProperty.Changed.AddClassHandler<HandBase>((hand, e) => hand.InvalidateCache());
+        LengthProperty.Changed.AddClassHandler<HandBase>(HandleLengthChanged);
+        TimeComponentProperty.Changed.AddClassHandler<HandBase>(HandleTimeComponentChanged);
+        IntegralValueProperty.Changed.AddClassHandler<HandBase>(HandleIntegralValueChanged);
+    }
+
+    private static void HandleLengthChanged(HandBase handBase, AvaloniaPropertyChangedEventArgs e)
+    {
+        handBase.InvalidateCache();
+        handBase.OnChanged(EventArgs.Empty);
+    }
+
+    private static void HandleTimeComponentChanged(HandBase handBase, AvaloniaPropertyChangedEventArgs e)
+    {
+        handBase.OnChanged(EventArgs.Empty);
+    }
+
+    private static void HandleIntegralValueChanged(HandBase handBase, AvaloniaPropertyChangedEventArgs e)
+    {
+        handBase.OnChanged(EventArgs.Empty);
     }
 
     protected override bool OnRendering(ClockDrawingContext context)
@@ -63,25 +82,48 @@ public abstract class HandBase : Shape, IHand
         return base.OnRendering(context);
     }
 
-    protected double CalculateHandAngle(TimeSpan time)
+    protected override void DoRender(ClockDrawingContext context)
     {
-        if (IntegralValue)
-        {
-            return TimeComponent switch
+        DrawingPlan.Create(context.DrawingContext)
+            .WithTransform(() =>
             {
-                TimeComponent.Hour => (time.Hours % 12) * 30.0,
-                TimeComponent.Minute => time.Minutes * 6.0,
-                TimeComponent.Second => time.Seconds * 6.0,
-                _ => 0
-            };
-        }
+                HandAngle handAngle = new()
+                {
+                    Time = context.Time,
+                    TimeComponent = TimeComponent,
+                    ClockDirection = context.ClockDirection,
+                    IntegralValue = IntegralValue
+                };
 
-        return TimeComponent switch
-        {
-            TimeComponent.Hour => (time.TotalHours % 12 / 12) * 360.0,
-            TimeComponent.Minute => (time.TotalMinutes % 60 / 60) * 360.0,
-            TimeComponent.Second => (time.TotalSeconds % 60 / 60) * 360.0,
-            _ => 0
-        };
+                return new RotateTransform((double)handAngle, 0, 0);
+            })
+            .Draw(dc =>
+            {
+                DoRenderHand(context);
+            });
     }
+
+    protected abstract void DoRenderHand(ClockDrawingContext context);
+
+    //protected double CalculateHandAngle(TimeSpan time)
+    //{
+    //    if (IntegralValue)
+    //    {
+    //        return TimeComponent switch
+    //        {
+    //            TimeComponent.Hour => (time.Hours % 12) * 30.0,
+    //            TimeComponent.Minute => time.Minutes * 6.0,
+    //            TimeComponent.Second => time.Seconds * 6.0,
+    //            _ => 0
+    //        };
+    //    }
+
+    //    return TimeComponent switch
+    //    {
+    //        TimeComponent.Hour => (time.TotalHours % 12 / 12) * 360.0,
+    //        TimeComponent.Minute => (time.TotalMinutes % 60 / 60) * 360.0,
+    //        TimeComponent.Second => (time.TotalSeconds % 60 / 60) * 360.0,
+    //        _ => 0
+    //    };
+    //}
 }

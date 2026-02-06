@@ -40,21 +40,13 @@ public class SimpleLineHand : HandBase
         e.StrokePen.LineCap = PenLineCap.Round;
     }
 
-    public override void DoRender(ClockDrawingContext context)
+    protected override void DoRenderHand(ClockDrawingContext context)
     {
-        DrawingPlan.Create(context.DrawingContext)
-            .WithTransform(() =>
-            {
-                double angleDegrees = CalculateHandAngle(context.Time);
-                return new RotateTransform(angleDegrees);
-            })
-            .Draw(dc =>
-            {
-                double radius = context.ClockDiameter / 2;
 
-                DrawHandLine(dc, radius);
-                DrawPin(dc, radius);
-            });
+        double radius = context.ClockDiameter / 2;
+
+        DrawHandLine(context.DrawingContext, radius);
+        DrawPin(context.DrawingContext, radius);
     }
 
     private void DrawHandLine(DrawingContext drawingContext, double radius)

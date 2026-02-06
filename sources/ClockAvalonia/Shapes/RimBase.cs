@@ -103,7 +103,7 @@ public abstract class RimBase : Shape
 
     #endregion
 
-    public override void DoRender(ClockDrawingContext context)
+    protected override void DoRender(ClockDrawingContext context)
     {
         double radius = context.ClockRadius;
         double actualDistanceFromEdge = radius * DistanceFromEdge / 100.0;

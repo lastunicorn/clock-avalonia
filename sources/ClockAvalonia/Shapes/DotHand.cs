@@ -44,17 +44,8 @@ public class DotHand : HandBase
         strokePen = CreateStrokePen();
     }
 
-    public override void DoRender(ClockDrawingContext context)
+    protected override void DoRenderHand(ClockDrawingContext context)
     {
-        DrawingPlan.Create(context.DrawingContext)
-            .WithTransform(() =>
-            {
-                double angleDegrees = CalculateHandAngle(context.Time);
-                return new RotateTransform(angleDegrees);
-            })
-            .Draw(dc =>
-            {
-                dc.DrawEllipse(FillBrush, strokePen, center, actualRadius, actualRadius);
-            });
+        context.DrawingContext.DrawEllipse(FillBrush, strokePen, center, actualRadius, actualRadius);
     }
 }

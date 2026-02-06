@@ -140,7 +140,7 @@ public class TextShape : Shape
         return base.OnRendering(context);
     }
 
-    public override void DoRender(ClockDrawingContext context)
+    protected override void DoRender(ClockDrawingContext context)
     {
         if (formattedText != null)
             context.DrawingContext.DrawText(formattedText, textPosition);

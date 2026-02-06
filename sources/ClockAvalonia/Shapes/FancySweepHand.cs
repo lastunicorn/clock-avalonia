@@ -86,19 +86,10 @@ public class FancySweepHand : HandBase
         strokePen = CreateStrokePen();
     }
 
-    public override void DoRender(ClockDrawingContext context)
+    protected override void DoRenderHand(ClockDrawingContext context)
     {
-        DrawingPlan.Create(context.DrawingContext)
-            .WithTransform(() =>
-            {
-                double angleDegrees = CalculateHandAngle(context.Time);
-                return new RotateTransform(angleDegrees);
-            })
-            .Draw(dc =>
-            {
-                dc.DrawLine(strokePen, mainLineStartPoint, mainLineEndPoint);
-                dc.DrawEllipse(null, strokePen, circleCenter, circleRadius, circleRadius);
-                dc.DrawLine(strokePen, tipLineStartPoint, tipLineEndPoint);
-            });
+        context.DrawingContext.DrawLine(strokePen, mainLineStartPoint, mainLineEndPoint);
+        context.DrawingContext.DrawEllipse(null, strokePen, circleCenter, circleRadius, circleRadius);
+        context.DrawingContext.DrawLine(strokePen, tipLineStartPoint, tipLineEndPoint);
     }
 }
