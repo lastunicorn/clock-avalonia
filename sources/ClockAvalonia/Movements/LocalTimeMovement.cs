@@ -1,9 +1,10 @@
-namespace DustInTheWind.ClockAvalonia.TimeProviders;
+namespace DustInTheWind.ClockAvalonia.Movements;
 
 /// <summary>
 /// Provides the system's local time.
 /// </summary>
-public class LocalTimeProvider : TimeProviderBase
+[Movement("Local Time", "Provides the current local time from the system clock.")]
+public class LocalTimeMovement : MovementBase
 {
     /// <summary>
     /// Returns the system's local time from the moment of the request.

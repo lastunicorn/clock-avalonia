@@ -2,5 +2,6 @@
   <Folder Name="/SolutionItems/">
     <File Path="Directory.Build.props" />
   </Folder>
+  <Project Path="ClockAvalonia.Demo/ClockAvalonia.Demo.csproj" Id="1de29819-f445-49ba-98a1-8d5699eb98b4" />
   <Project Path="ClockAvalonia/ClockAvalonia.csproj" Id="fb19662e-e2fd-48b6-b1af-b014cab4a4c7" />
 </Solution>

@@ -4,9 +4,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
+using DustInTheWind.ClockAvalonia.Movements;
 using DustInTheWind.ClockAvalonia.Shapes;
 using DustInTheWind.ClockAvalonia.Templates;
-using DustInTheWind.ClockAvalonia.TimeProviders;
 
 namespace DustInTheWind.ClockAvalonia;
 
@@ -56,22 +56,22 @@ public class AnalogClock : TemplatedControl
 
     #endregion
 
-    #region TimeProvider StyledProperty
+    #region Movement StyledProperty
 
-    public static readonly StyledProperty<ITimeProvider?> TimeProviderProperty = AvaloniaProperty.Register<AnalogClock, ITimeProvider>(
-        nameof(TimeProvider));
+    public static readonly StyledProperty<IMovement> MovementProperty = AvaloniaProperty.Register<AnalogClock, IMovement>(
+        nameof(Movement));
 
-    public ITimeProvider TimeProvider
+    public IMovement Movement
     {
-        get => GetValue(TimeProviderProperty);
-        set => SetValue(TimeProviderProperty, value);
+        get => GetValue(MovementProperty);
+        set => SetValue(MovementProperty, value);
     }
 
     #endregion
 
     #region ClockTemplate StyledProperty
 
-    public static readonly StyledProperty<ClockTemplate?> ClockTemplateProperty = AvaloniaProperty.Register<AnalogClock, ClockTemplate>(
+    public static readonly StyledProperty<ClockTemplate> ClockTemplateProperty = AvaloniaProperty.Register<AnalogClock, ClockTemplate>(
         nameof(ClockTemplate));
 
     public ClockTemplate ClockTemplate
@@ -84,10 +84,10 @@ public class AnalogClock : TemplatedControl
 
     static AnalogClock()
     {
-        ShapesProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.OnShapesChanged(e));
-        KeepProportionsProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.OnKeepProportionsChanged(e));
-        TimeProviderProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.OnTimeProviderChanged(e));
-        ClockTemplateProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.OnClockTemplateChanged(e));
+        ShapesProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.HandleShapesChanged(e));
+        KeepProportionsProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.HandleKeepProportionsChanged(e));
+        MovementProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.HandleMovementChanged(e));
+        ClockTemplateProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.HandleClockTemplateChanged(e));
     }
 
     public AnalogClock()
@@ -101,12 +101,12 @@ public class AnalogClock : TemplatedControl
 
         dial = e.NameScope.Find<Dial>("PART_Dial");
 
-        ITimeProvider currentTimeProvider = TimeProvider;
-        if (currentTimeProvider != null)
-            UpdateDisplayedTime(currentTimeProvider.LastValue);
+        IMovement currentMovement = Movement;
+        if (currentMovement != null)
+            UpdateDisplayedTime(currentMovement.LastTick);
     }
 
-    private void OnShapesChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleShapesChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.OldValue is ObservableCollection<Shape> oldShapes)
             oldShapes.CollectionChanged -= HandleShapesCollectionChanged;
@@ -128,24 +128,24 @@ public class AnalogClock : TemplatedControl
         IsEmpty = Shapes == null || Shapes.Count == 0;
     }
 
-    private void OnKeepProportionsChanged(AvaloniaPropertyChangedEventArgs _)
+    private void HandleKeepProportionsChanged(AvaloniaPropertyChangedEventArgs _)
     {
         dial?.InvalidateVisual();
     }
 
-    private void OnTimeProviderChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleMovementChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        if (e.OldValue is ITimeProvider oldTimeProvider)
-            oldTimeProvider.Tick -= HandleTimeChanged;
+        if (e.OldValue is IMovement oldMovement)
+            oldMovement.Tick -= HandleTimeChanged;
 
-        if (e.NewValue is ITimeProvider newTimeProvider)
+        if (e.NewValue is IMovement newMovement)
         {
-            newTimeProvider.Tick += HandleTimeChanged;
-            UpdateDisplayedTime(newTimeProvider.LastValue);
+            newMovement.Tick += HandleTimeChanged;
+            UpdateDisplayedTime(newMovement.LastTick);
         }
     }
 
-    private void OnClockTemplateChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleClockTemplateChanged(AvaloniaPropertyChangedEventArgs e)
     {
         Shapes.Clear();
 

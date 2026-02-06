@@ -1,13 +1,16 @@
 using System.ComponentModel;
 
-namespace DustInTheWind.ClockAvalonia.TimeProviders;
+namespace DustInTheWind.ClockAvalonia.Movements;
 
 /// <summary>
 /// Implements base functionality for a time provider class.
 /// </summary>
-public abstract class TimeProviderBase : ITimeProvider
+public abstract class MovementBase : IMovement
 {
     private readonly Timer timer;
+
+    #region TickInterval Property
+
     private int tickInterval = 100;
 
     /// <summary>
@@ -39,6 +42,8 @@ public abstract class TimeProviderBase : ITimeProvider
         }
     }
 
+    #endregion
+
     /// <summary>
     /// Gets a value indicating whether the time provider is currently running.
     /// </summary>
@@ -49,7 +54,16 @@ public abstract class TimeProviderBase : ITimeProvider
     /// Gets the most recently provided value.
     /// </summary>
     [Browsable(false)]
-    public TimeSpan LastValue { get; private set; }
+    public TimeSpan LastTick { get; private set; }
+
+    /// <summary>
+    /// Occurs when the object is modified.
+    /// </summary>
+    /// <remarks>
+    /// Subscribers can use this event to respond to changes in the object's state or content. The
+    /// event is typically raised after a modification operation completes.
+    /// </remarks>
+    public event EventHandler Modified;
 
     /// <summary>
     /// Event raised when the time provider produces a new time value.
@@ -57,17 +71,17 @@ public abstract class TimeProviderBase : ITimeProvider
     public event EventHandler<TickEventArgs> Tick;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TimeProviderBase"/> class.
+    /// Initializes a new instance of the <see cref="MovementBase"/> class.
     /// </summary>
-    protected TimeProviderBase()
+    protected MovementBase()
     {
         timer = new Timer(HandleTimerCallback, null, Timeout.Infinite, Timeout.Infinite);
     }
 
-    private void HandleTimerCallback(object? state)
+    private void HandleTimerCallback(object state)
     {
-        LastValue = GenerateNewTime();
-        OnTick(new TickEventArgs(LastValue));
+        LastTick = GenerateNewTime();
+        OnTick(new TickEventArgs(LastTick));
     }
 
     /// <summary>
@@ -103,10 +117,30 @@ public abstract class TimeProviderBase : ITimeProvider
         IsRunning = false;
     }
 
+    /// <summary>
+    /// Forces the timer to perform a tick operation immediately, updating the last tick time and raising the tick
+    /// event.
+    /// </summary>
+    /// <remarks>
+    /// This method bypasses any scheduled timing and triggers the tick logic as if the timer
+    /// interval had elapsed. It can be used to manually advance the timer state or to simulate a tick for testing or
+    /// synchronization purposes.
+    /// </remarks>
     protected void ForceTick()
     {
-        LastValue = GenerateNewTime();
-        OnTick(new TickEventArgs(LastValue));
+        LastTick = GenerateNewTime();
+        OnTick(new TickEventArgs(LastTick));
+    }
+
+    /// <summary>
+    /// Raises the Modified event to notify subscribers that the object has been changed.
+    /// </summary>
+    /// <remarks>Derived classes can override this method to provide additional behavior when the object is
+    /// modified. This method is typically called after a change to the object's state that should trigger
+    /// notification.</remarks>
+    protected virtual void OnModified()
+    {
+        Modified?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>
@@ -141,7 +175,7 @@ public abstract class TimeProviderBase : ITimeProvider
         }
     }
 
-    ~TimeProviderBase()
+    ~MovementBase()
     {
         Dispose(false);
     }

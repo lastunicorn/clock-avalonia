@@ -1,11 +1,12 @@
 using System.ComponentModel;
 
-namespace DustInTheWind.ClockAvalonia.TimeProviders;
+namespace DustInTheWind.ClockAvalonia.Movements;
 
 /// <summary>
 /// Provides the UTC time. Optionally, an offset may be provided.
 /// </summary>
-public class UtcTimeProvider : TimeProviderBase
+[Movement("UTC", "Provides the current UTC time. An optional offset can be usedto display time from a different timezone.")]
+public class UtcTimeMovement : MovementBase
 {
     /// <summary>
     /// Gets or sets the offset time used to adjust the system's UTC time value.
@@ -22,6 +23,7 @@ public class UtcTimeProvider : TimeProviderBase
                 return;
 
             field = value;
+            OnModified();
             ForceTick();
         }
     }

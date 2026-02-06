@@ -1,10 +1,19 @@
-namespace DustInTheWind.ClockAvalonia.TimeProviders;
+namespace DustInTheWind.ClockAvalonia.Movements;
 
 /// <summary>
 /// Provides the time to be displayed by a clock. The time is provided as <see cref="TimeSpan"/> objects.
 /// </summary>
-public interface ITimeProvider : IDisposable
+public interface IMovement : IDisposable
 {
+    /// <summary>
+    /// Occurs when the object is modified.
+    /// </summary>
+    /// <remarks>
+    /// Subscribers can use this event to respond to changes in the object's state. The event is
+    /// raised after a modification has been made.
+    /// </remarks>
+    event EventHandler Modified;
+
     /// <summary>
     /// Event raised when the time provider produces a new time value.
     /// </summary>
@@ -23,7 +32,7 @@ public interface ITimeProvider : IDisposable
     /// <summary>
     /// Gets the most recently provided value.
     /// </summary>
-    TimeSpan LastValue { get; }
+    TimeSpan LastTick { get; }
 
     /// <summary>
     /// Starts the time provider. The time provider will begin generating time values.
