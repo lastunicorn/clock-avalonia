@@ -116,6 +116,8 @@ public abstract class Shape : AvaloniaObject
     static Shape()
     {
         _ = NameProperty.Changed.AddClassHandler<Shape>((shape, e) => shape.HandleNameChanged(e));
+        _ = IsVisibleProperty.Changed.AddClassHandler<Shape>((shape, e) => shape.HandleIsVisibleChanged(e));
+        _ = FillBrushProperty.Changed.AddClassHandler<Shape>((shape, e) => shape.HandleFillBrushChanged(e));
         _ = StrokeBrushProperty.Changed.AddClassHandler<Shape>((shape, e) => shape.HandleStrokeBrushChanged(e));
         _ = StrokeThicknessProperty.Changed.AddClassHandler<Shape>((shape, e) => shape.HandleStrokeThicknessChanged(e));
     }
@@ -125,8 +127,14 @@ public abstract class Shape : AvaloniaObject
         OnNameChanged(EventArgs.Empty);
     }
 
-    protected virtual void OnCreateStrokePen(CreateStrokePenEventArgs e)
+    private void HandleIsVisibleChanged(AvaloniaPropertyChangedEventArgs e)
     {
+        OnChanged(EventArgs.Empty);
+    }
+
+    private void HandleFillBrushChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        OnChanged(EventArgs.Empty);
     }
 
     private void HandleStrokeBrushChanged(AvaloniaPropertyChangedEventArgs _)
@@ -152,6 +160,10 @@ public abstract class Shape : AvaloniaObject
         OnCreateStrokePen(args);
 
         return pen;
+    }
+
+    protected virtual void OnCreateStrokePen(CreateStrokePenEventArgs e)
+    {
     }
 
     public void Render(ClockDrawingContext context)

@@ -3,11 +3,11 @@ using Avalonia.Media;
 
 namespace DustInTheWind.ClockAvalonia.Shapes;
 
-public class CapsuleHand : HandBase
+public class RodHand : HandBase
 {
     #region Width StyledProperty
 
-    public static readonly StyledProperty<double> WidthProperty = AvaloniaProperty.Register<CapsuleHand, double>(
+    public static readonly StyledProperty<double> WidthProperty = AvaloniaProperty.Register<RodHand, double>(
         nameof(Width),
         defaultValue: 4.0);
 
@@ -21,7 +21,7 @@ public class CapsuleHand : HandBase
 
     #region TailLength StyledProperty
 
-    public static readonly StyledProperty<double> TailLengthProperty = AvaloniaProperty.Register<CapsuleHand, double>(
+    public static readonly StyledProperty<double> TailLengthProperty = AvaloniaProperty.Register<RodHand, double>(
         nameof(TailLength),
         defaultValue: 2.0);
 
@@ -33,20 +33,22 @@ public class CapsuleHand : HandBase
 
     #endregion
 
-    static CapsuleHand()
+    static RodHand()
     {
-        _ = WidthProperty.Changed.AddClassHandler<CapsuleHand>(HandleWidthChanged);
-        _ = TailLengthProperty.Changed.AddClassHandler<CapsuleHand>(HandleTailLengthChanged);
+        _ = WidthProperty.Changed.AddClassHandler<RodHand>(HandleWidthChanged);
+        _ = TailLengthProperty.Changed.AddClassHandler<RodHand>(HandleTailLengthChanged);
     }
 
-    private static void HandleWidthChanged(CapsuleHand capsuleHand, AvaloniaPropertyChangedEventArgs e)
+    private static void HandleWidthChanged(RodHand capsuleHand, AvaloniaPropertyChangedEventArgs e)
     {
         capsuleHand.InvalidateCache();
+        capsuleHand.OnChanged(EventArgs.Empty);
     }
 
-    private static void HandleTailLengthChanged(CapsuleHand capsuleHand, AvaloniaPropertyChangedEventArgs e)
+    private static void HandleTailLengthChanged(RodHand capsuleHand, AvaloniaPropertyChangedEventArgs e)
     {
         capsuleHand.InvalidateCache();
+        capsuleHand.OnChanged(EventArgs.Empty);
     }
 
     private PathGeometry handGeometry;

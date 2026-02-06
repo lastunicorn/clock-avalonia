@@ -56,26 +56,18 @@ public class Ticks : RimBase
     {
         base.OnCreateStrokePen(e);
 
-        e.StrokePen.LineCap = RoundEnds
-            ? PenLineCap.Round
-            : PenLineCap.Flat;
+        if (RoundEnds)
+            e.StrokePen.LineCap = PenLineCap.Round;
     }
-
-    //protected override IPen CreateStrokePen()
-    //{
-    //    if (StrokeThickness <= 0 || StrokeBrush == null)
-    //        return null;
-
-    //    PenLineCap lineCap = RoundEnds
-    //        ? PenLineCap.Round
-    //        : PenLineCap.Flat;
-
-    //    return new Pen(StrokeBrush, StrokeThickness, lineCap: lineCap);
-    //}
 
     protected override void RenderItem(ClockDrawingContext context, int index)
     {
         double actualLength = Length.RelativeTo(context.ClockRadius);
+        double tipLength = RoundEnds
+            ? StrokeThickness / 2
+            : 0;
+
+        actualLength -= tipLength * 2;
 
         Point startPoint = new(0, -actualLength / 2);
         Point endPoint = new(0, actualLength / 2);

@@ -41,7 +41,7 @@ public class PlayfulTemplate : ClockTemplate
             DistanceFromEdge = 30
         };
 
-        yield return new CapsuleHand
+        yield return new RodHand
         {
             Name = "Hour Hand",
             TimeComponent = TimeComponent.Hour,
@@ -52,7 +52,7 @@ public class PlayfulTemplate : ClockTemplate
             FillBrush = Brushes.RoyalBlue
         };
 
-        yield return new CapsuleHand
+        yield return new RodHand
         {
             Name = "Minute Hand",
             TimeComponent = TimeComponent.Minute,
@@ -70,8 +70,15 @@ public class PlayfulTemplate : ClockTemplate
             Length = 84,
             TailLength = -19,
             StrokeBrush = Brushes.Red,
-            StrokeThickness = 1,
-            PinDiameter = 24
+            StrokeThickness = 1
+        };
+
+        yield return new Pin()
+        {
+            Name = "Pin",
+            Diameter = 24,
+            FillBrush = Brushes.Red,
+            StrokeThickness = 0
         };
     }
 }

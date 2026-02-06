@@ -1,10 +1,26 @@
+using System.Net;
 using Avalonia;
 using Avalonia.Media;
+using DustInTheWind.ClockAvalonia.Utils;
 
 namespace DustInTheWind.ClockAvalonia.Shapes;
 
 public class SimpleLineHand : HandBase
 {
+    #region RoundEnds StyledProperty
+
+    public static readonly StyledProperty<bool> RoundEndsProperty = AvaloniaProperty.Register<SimpleLineHand, bool>(
+        nameof(RoundEnds),
+        defaultValue: false);
+
+    public bool RoundEnds
+    {
+        get => GetValue(RoundEndsProperty);
+        set => SetValue(RoundEndsProperty, value);
+    }
+
+    #endregion
+
     #region TailLength StyledProperty
 
     public static readonly StyledProperty<double> TailLengthProperty = AvaloniaProperty.Register<SimpleLineHand, double>(
@@ -19,67 +35,65 @@ public class SimpleLineHand : HandBase
 
     #endregion
 
-    #region PinDiameter StyledProperty
-
-    public static readonly StyledProperty<double> PinDiameterProperty = AvaloniaProperty.Register<SimpleLineHand, double>(
-        nameof(PinDiameter),
-        defaultValue: 4.0);
-
-    public double PinDiameter
+    static SimpleLineHand()
     {
-        get => GetValue(PinDiameterProperty);
-        set => SetValue(PinDiameterProperty, value);
+        _ = RoundEndsProperty.Changed.AddClassHandler<SimpleLineHand>((hand, e) => hand.HandleRoundEndsChanged(e));
+        _ = TailLengthProperty.Changed.AddClassHandler<SimpleLineHand>((hand, e) => hand.HandleTailLengthChanged(e));
     }
 
-    #endregion
+    private void HandleRoundEndsChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        InvalidateCache();
+        OnChanged(EventArgs.Empty);
+    }
+
+    private void HandleTailLengthChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        InvalidateCache();
+        OnChanged(EventArgs.Empty);
+    }
+
+    private Point startPoint;
+    private Point endPoint;
+    private Pen strokePen;
+
+    protected override bool OnRendering(ClockDrawingContext context)
+    {
+        if (StrokeThickness <= 0 || StrokeBrush == null)
+            return false;
+
+        return base.OnRendering(context);
+    }
+
+    protected override void CalculateCache(ClockDrawingContext context)
+    {
+        base.CalculateCache(context);
+
+        // Hand
+
+        double radius = context.ClockRadius;
+        double calculatedLength = Length.RelativeTo(radius);
+        double calculatedTailLength = TailLength.RelativeTo(radius);
+        double calculatedTipLength = RoundEnds
+            ? StrokeThickness / 2
+            : 0;
+
+        startPoint = new(0, calculatedTailLength - calculatedTipLength);
+        endPoint = new(0, -calculatedLength + calculatedTipLength);
+
+        strokePen = CreateStrokePen();
+    }
 
     protected override void OnCreateStrokePen(CreateStrokePenEventArgs e)
     {
         base.OnCreateStrokePen(e);
 
-        e.StrokePen.LineCap = PenLineCap.Round;
+        if (RoundEnds)
+            e.StrokePen.LineCap = PenLineCap.Round;
     }
 
     protected override void DoRenderHand(ClockDrawingContext context)
     {
-
-        double radius = context.ClockDiameter / 2;
-
-        DrawHandLine(context.DrawingContext, radius);
-        DrawPin(context.DrawingContext, radius);
-    }
-
-    private void DrawHandLine(DrawingContext drawingContext, double radius)
-    {
-        Pen strokePen = CreateStrokePen();
-
-        if (strokePen == null)
-            return;
-
-        if (Length <= 0 && TailLength <= 0)
-            return;
-
-        double handLength = radius * (Length / 100.0);
-        double tailLength = radius * (TailLength / 100.0);
-
-        Point startPoint = new(0, tailLength);
-        Point endPoint = new(0, -handLength);
-
-        drawingContext.DrawLine(strokePen, startPoint, endPoint);
-    }
-
-    private void DrawPin(DrawingContext drawingContext, double radius)
-    {
-        if (StrokeBrush == null)
-            return;
-
-        if (PinDiameter <= 0)
-            return;
-
-        double calculatedPinDiameter = radius * (PinDiameter / 100.0);
-        double calculatedPinRadius = calculatedPinDiameter / 2;
-
-        Point center = new(0, 0);
-        drawingContext.DrawEllipse(StrokeBrush, null, center, calculatedPinRadius, calculatedPinRadius);
+        context.DrawingContext.DrawLine(strokePen, startPoint, endPoint);
     }
 }

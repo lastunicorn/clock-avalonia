@@ -35,38 +35,45 @@ public class DefaultTemplate : ClockTemplate
             DistanceFromEdge = 26
         };
 
-        yield return new CapsuleHand
+        yield return new SimpleLineHand
         {
             Name = "Hour Hand",
             TimeComponent = TimeComponent.Hour,
             Length = 48,
-            Width = 8,
             TailLength = 4,
-            StrokeThickness = 0,
-            FillBrush = Brushes.Black
+            StrokeThickness = 8,
+            FillBrush = Brushes.Black,
+            RoundEnds = true
         };
 
-        yield return new CapsuleHand
+        yield return new SimpleLineHand
         {
             Name = "Minute Hand",
             TimeComponent = TimeComponent.Minute,
             Length = 85,
-            Width = 8,
             TailLength = 4,
-            StrokeThickness = 0,
-            FillBrush = Brushes.Black
+            StrokeThickness = 8,
+            FillBrush = Brushes.Black,
+            RoundEnds = true
         };
 
         yield return new SimpleLineHand
         {
             Name = "Second Hand",
             TimeComponent = TimeComponent.Second,
-            Length = 96,
-            TailLength = 14,
+            Length = 96.5,
+            TailLength = 24,
             StrokeBrush = Brushes.Red,
             StrokeThickness = 1,
-            IntegralValue = true,
-            PinDiameter = 8
+            IntegralValue = true
+        };
+
+        yield return new Pin()
+        {
+            Name = "Pin",
+            Diameter = 8,
+            FillBrush = Brushes.Red,
+            StrokeThickness = 0
         };
     }
 }

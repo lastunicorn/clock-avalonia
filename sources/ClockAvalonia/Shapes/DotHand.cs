@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Media;
+using DustInTheWind.ClockAvalonia.Utils;
 
 namespace DustInTheWind.ClockAvalonia.Shapes;
 
@@ -36,8 +37,8 @@ public class DotHand : HandBase
         base.CalculateCache(context);
 
         double clockRadius = context.ClockRadius;
-        double actualLength = clockRadius * (Length / 100.0);
-        actualRadius = clockRadius * (Radius / 100.0);
+        double actualLength = Length.RelativeTo(clockRadius);
+        actualRadius = Radius.RelativeTo(clockRadius);
 
         center = new Point(0, -actualLength);
 
