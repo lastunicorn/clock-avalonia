@@ -40,7 +40,7 @@
 			VerticalAlignment="Stretch"
 			ClockTemplate="{Binding ClockTemplate}"
 			Movement="{Binding ClockMovement}"
-			RotationDirection="{Binding ClockDirection}"/>
+			RotationDirection="{Binding ClockDirection}" />
 
         <GridSplitter
             Grid.Column="1"

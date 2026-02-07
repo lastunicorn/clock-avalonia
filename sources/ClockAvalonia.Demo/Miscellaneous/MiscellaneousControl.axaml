@@ -58,6 +58,7 @@
                 IsChecked="{Binding ClockDirection, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static shapes:RotationDirection.Counterclockwise}}"
                 VerticalAlignment="Center"/>
         </StackPanel>
+
     </Grid>
 
 </UserControl>

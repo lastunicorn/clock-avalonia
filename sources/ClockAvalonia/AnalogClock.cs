@@ -57,20 +57,6 @@ public class AnalogClock : TemplatedControl
 
     #endregion
 
-    #region KeepProportions StyledProperty
-
-    public static readonly StyledProperty<bool> KeepProportionsProperty = AvaloniaProperty.Register<AnalogClock, bool>(
-        nameof(KeepProportions),
-        defaultValue: true);
-
-    public bool KeepProportions
-    {
-        get => GetValue(KeepProportionsProperty);
-        set => SetValue(KeepProportionsProperty, value);
-    }
-
-    #endregion
-
     #region Movement StyledProperty
 
     public static readonly StyledProperty<IMovement> MovementProperty = AvaloniaProperty.Register<AnalogClock, IMovement>(
@@ -114,7 +100,6 @@ public class AnalogClock : TemplatedControl
     static AnalogClock()
     {
         ShapesProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.HandleShapesChanged(e));
-        KeepProportionsProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.HandleKeepProportionsChanged(e));
         ClockTemplateProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.HandleClockTemplateChanged(e));
     }
 
@@ -150,11 +135,6 @@ public class AnalogClock : TemplatedControl
     private void UpdateIsEmpty()
     {
         IsEmpty = Shapes == null || Shapes.Count == 0;
-    }
-
-    private void HandleKeepProportionsChanged(AvaloniaPropertyChangedEventArgs _)
-    {
-        dial?.InvalidateVisual();
     }
 
     private void HandleClockTemplateChanged(AvaloniaPropertyChangedEventArgs e)

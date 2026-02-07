@@ -21,6 +21,9 @@ public partial class App : Application
         Setup.ConfigureServices(serviceCollection);
         IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
 
+        AppInitializationUseCase appInitializationUseCase = serviceProvider.GetService<AppInitializationUseCase>();
+        appInitializationUseCase.Execute();
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 

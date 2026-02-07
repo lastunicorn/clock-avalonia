@@ -24,6 +24,8 @@ internal static class Setup
         serviceCollection.AddTransient<MainWindowViewModel>();
 
         serviceCollection.AddTransient<MiscellaneousViewModel>();
+
+        serviceCollection.AddTransient<AppInitializationUseCase>();
     }
 
     private static void AddTemplates(ServiceCollection serviceCollection)

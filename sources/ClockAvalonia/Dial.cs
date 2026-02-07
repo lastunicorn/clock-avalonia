@@ -43,20 +43,6 @@ public class Dial : Control
 
     #endregion
 
-    #region KeepProperties StyledProperty
-
-    public static readonly StyledProperty<bool> KeepProportionsProperty = AvaloniaProperty.Register<Dial, bool>(
-        nameof(KeepProportions),
-        defaultValue: false);
-
-    public bool KeepProportions
-    {
-        get => GetValue(KeepProportionsProperty);
-        set => SetValue(KeepProportionsProperty, value);
-    }
-
-    #endregion
-
     #region Movement StyledProperty
 
     public static readonly StyledProperty<IMovement> MovementProperty = AvaloniaProperty.Register<Dial, IMovement>(
@@ -88,11 +74,10 @@ public class Dial : Control
     static Dial()
     {
         _ = ShapesProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.HandleShapesChanged(e));
-        _ = KeepProportionsProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.HandleKeepProportionsChanged(e));
         _ = MovementProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.HandleMovementChanged(e));
         _ = RotationDirectionProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.HandleRotationDirectionChnaged(e));
 
-        AffectsRender<Dial>(ShapesProperty, KeepProportionsProperty, MovementProperty);
+        AffectsRender<Dial>(ShapesProperty, MovementProperty, RotationDirectionProperty);
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -119,11 +104,6 @@ public class Dial : Control
 
             InvalidateVisual();
         }
-    }
-
-    private void HandleKeepProportionsChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        InvalidateVisual();
     }
 
     private void HandleMovementChanged(AvaloniaPropertyChangedEventArgs e)
@@ -177,20 +157,7 @@ public class Dial : Control
             double diameter = Math.Min(Bounds.Width, Bounds.Height);
 
             using (drawingContext.PushTransform(Matrix.CreateTranslation(Bounds.Width / 2, Bounds.Height / 2)))
-            {
-                if (!KeepProportions)
-                {
-                    double scaleX = Bounds.Width / diameter;
-                    double scaleY = Bounds.Height / diameter;
-
-                    using (drawingContext.PushTransform(Matrix.CreateScale(scaleX, scaleY)))
-                        RenderShapes(drawingContext, diameter);
-                }
-                else
-                {
-                    RenderShapes(drawingContext, diameter);
-                }
-            }
+                RenderShapes(drawingContext, diameter);
         }
         finally
         {
