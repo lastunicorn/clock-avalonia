@@ -4,6 +4,8 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using DustInTheWind.ClockAvalonia.Demo.ViewModels;
 using DustInTheWind.ClockAvalonia.Demo.Views;
+using DustInTheWind.ClockWpf.TemplateEditor;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DustInTheWind.ClockAvalonia.Demo;
 
@@ -16,15 +18,21 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        ServiceCollection serviceCollection = new();
+        Setup.ConfigureServices(serviceCollection);
+        IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainWindowViewModel(),
-            };
+            //desktop.MainWindow = new MainWindow
+            //{
+            //    DataContext = new MainWindowViewModel(new Miscellaneous.MiscellaneousViewModel(new State.ApplicationState())),
+            //};
+            desktop.MainWindow = serviceProvider.GetService<MainWindow>();
+            desktop.MainWindow.DataContext = serviceProvider.GetService<MainWindowViewModel>();
         }
 
         base.OnFrameworkInitializationCompleted();

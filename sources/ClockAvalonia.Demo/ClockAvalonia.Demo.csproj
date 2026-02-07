@@ -25,9 +25,16 @@
 			<PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\ClockAvalonia\ClockAvalonia.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Miscellaneous\MiscellaneousControl.axaml.cs">
+	    <DependentUpon>MiscellaneousControl.axaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 </Project>

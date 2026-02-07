@@ -2,31 +2,77 @@
 	x:Class="DustInTheWind.ClockAvalonia.Demo.Views.MainWindow"
 
 	xmlns="https://github.com/avaloniaui"
-    xmlns:clockavalonia="using:DustInTheWind.ClockAvalonia"
+	xmlns:clockavalonia="using:DustInTheWind.ClockAvalonia"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:vm="using:DustInTheWind.ClockAvalonia.Demo.ViewModels"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	
+	xmlns:miscellaneous="using:DustInTheWind.ClockAvalonia.Demo.Miscellaneous"
+
 	mc:Ignorable="d"
 	d:DesignWidth="500"
 	d:DesignHeight="500"
 	x:DataType="vm:MainWindowViewModel"
 	Icon="/Assets/avalonia-logo.ico"
-	Title="ClockAvalonia.Demo"
-	Background="White">
+	Title="Clock Avalonia Demo"
+	Background="Black"
+    Height="768"
+    Width="1280">
 
 	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
-		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<!--
+		This only sets the DataContext for the previewer in an IDE,
+		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs)
+		-->
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
 
+	<Grid>
+		<Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="400"/>
+		</Grid.ColumnDefinitions>
+
 		<clockavalonia:AnalogClock
+			Grid.Column="0"
 			HorizontalAlignment="Stretch"
 			VerticalAlignment="Stretch"
 			ClockTemplate="{Binding ClockTemplate}"
 			Movement="{Binding ClockMovement}"
-			RotationDirection="Clockwise"/>
+			RotationDirection="{Binding ClockDirection}"/>
+
+        <GridSplitter
+            Grid.Column="1"
+            Width="10"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="#f0f0f0" />
+
+        <TabControl
+            Grid.Column="2"
+            BorderThickness="0"
+            Margin="10">
+
+            <TabItem Header="Templates" IsSelected="True">
+                <!--<templates:TemplatesControl DataContext="{Binding TemplatesViewModel}"/>-->
+            </TabItem>
+
+            <TabItem Header="Shapes">
+                <!--<shapesctrl:ShapesControl DataContext="{Binding ShapesViewModel}"/>-->
+            </TabItem>
+
+            <TabItem Header="Movement">
+                <!--<movements:MovementsControl DataContext="{Binding MovementsViewModel}"/>-->
+            </TabItem>
+
+            <TabItem Header="Misc">
+                <miscellaneous:MiscellaneousControl DataContext="{Binding MiscellaneousViewModel}"/>
+            </TabItem>
+
+        </TabControl>
+
+	
+	</Grid>
 
 </Window>
