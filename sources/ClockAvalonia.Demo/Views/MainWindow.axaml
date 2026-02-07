@@ -27,6 +27,6 @@
 			VerticalAlignment="Stretch"
 			ClockTemplate="{Binding ClockTemplate}"
 			Movement="{Binding ClockMovement}"
-			RotationDirection="Counterclockwise"/>
+			RotationDirection="Clockwise"/>
 
 </Window>

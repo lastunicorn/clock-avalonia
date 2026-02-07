@@ -5,6 +5,7 @@ Ver 1.1.0
 ----------------------------------------------------------------------------------------------------
 [new   ] Added StaticMovement that displays a fixed time value.
 [change] Multiple refactorings and renames. (breaking changes)
+[new   ] Added support for counterclockwise clock.
 
 
 Ver 1.0.0
