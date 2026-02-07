@@ -46,9 +46,12 @@
                                 
 						<controls:Dial
 							Name="PART_Dial"
+                            Width="200"
+                            Height="200"
 							Shapes="{TemplateBinding Shapes}"
 							KeepProportions="{TemplateBinding KeepProportions}"
-                            Movement="{TemplateBinding Movement}"/>
+                            Movement="{TemplateBinding Movement}"
+                            PerformanceMeter="{TemplateBinding PerformanceMeter}"/>
 
 					</Grid>
 				</Viewbox>

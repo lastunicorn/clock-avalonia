@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
 using DustInTheWind.ClockAvalonia.Movements;
+using DustInTheWind.ClockAvalonia.Performance;
 using DustInTheWind.ClockAvalonia.Shapes;
 using DustInTheWind.ClockAvalonia.Templates;
 
@@ -13,6 +14,20 @@ namespace DustInTheWind.ClockAvalonia;
 public class AnalogClock : TemplatedControl
 {
     private Dial dial;
+
+    #region PerformanceMeter StyledProperty
+
+    public static readonly StyledProperty<PerformanceMeter> PerformanceMeterProperty = AvaloniaProperty.Register<AnalogClock, PerformanceMeter>(
+        nameof(PerformanceMeter),
+        defaultValue: null);
+
+    public PerformanceMeter PerformanceMeter
+    {
+        get => GetValue(PerformanceMeterProperty);
+        set => SetValue(PerformanceMeterProperty, value);
+    }
+
+    #endregion
 
     #region Shapes StyledProperty
 

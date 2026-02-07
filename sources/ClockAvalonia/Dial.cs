@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 using DustInTheWind.ClockAvalonia.Movements;
+using DustInTheWind.ClockAvalonia.Performance;
 using DustInTheWind.ClockAvalonia.Shapes;
 
 namespace DustInTheWind.ClockAvalonia;
@@ -12,8 +13,21 @@ namespace DustInTheWind.ClockAvalonia;
 public class Dial : Control
 {
     private NotifyCollectionChangedEventHandler collectionChangedHandler;
-
     private TimeSpan time;
+
+    #region PerformanceMeter StyledProperty
+
+    public static readonly StyledProperty<PerformanceMeter> PerformanceMeterProperty = AvaloniaProperty.Register<Dial, PerformanceMeter>(
+        nameof(PerformanceMeter),
+        defaultValue: null);
+
+    public PerformanceMeter PerformanceMeter
+    {
+        get => GetValue(PerformanceMeterProperty);
+        set => SetValue(PerformanceMeterProperty, value);
+    }
+
+    #endregion
 
     #region Shapes StyledProperty
 
@@ -130,27 +144,37 @@ public class Dial : Control
 
     public override void Render(DrawingContext drawingContext)
     {
-        base.Render(drawingContext);
+        PerformanceMeter performanceInfo = PerformanceMeter;
+        performanceInfo?.StartMeasurement();
 
-        if (Shapes == null || Shapes.Count == 0)
-            return;
-
-        double diameter = Math.Min(Bounds.Width, Bounds.Height);
-
-        using (drawingContext.PushTransform(Matrix.CreateTranslation(Bounds.Width / 2, Bounds.Height / 2)))
+        try
         {
-            if (!KeepProportions)
-            {
-                double scaleX = Bounds.Width / diameter;
-                double scaleY = Bounds.Height / diameter;
+            base.Render(drawingContext);
 
-                using (drawingContext.PushTransform(Matrix.CreateScale(scaleX, scaleY)))
-                    RenderShapes(drawingContext, diameter);
-            }
-            else
+            if (Shapes == null || Shapes.Count == 0)
+                return;
+
+            double diameter = Math.Min(Bounds.Width, Bounds.Height);
+
+            using (drawingContext.PushTransform(Matrix.CreateTranslation(Bounds.Width / 2, Bounds.Height / 2)))
             {
-                RenderShapes(drawingContext, diameter);
+                if (!KeepProportions)
+                {
+                    double scaleX = Bounds.Width / diameter;
+                    double scaleY = Bounds.Height / diameter;
+
+                    using (drawingContext.PushTransform(Matrix.CreateScale(scaleX, scaleY)))
+                        RenderShapes(drawingContext, diameter);
+                }
+                else
+                {
+                    RenderShapes(drawingContext, diameter);
+                }
             }
+        }
+        finally
+        {
+            performanceInfo?.EndMeasurement();
         }
     }
 
