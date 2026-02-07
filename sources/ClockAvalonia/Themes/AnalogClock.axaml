@@ -51,7 +51,8 @@
 							Shapes="{TemplateBinding Shapes}"
 							KeepProportions="{TemplateBinding KeepProportions}"
                             Movement="{TemplateBinding Movement}"
-                            PerformanceMeter="{TemplateBinding PerformanceMeter}"/>
+                            PerformanceMeter="{TemplateBinding PerformanceMeter}"
+                            RotationDirection="{TemplateBinding RotationDirection}"/>
 
 					</Grid>
 				</Viewbox>

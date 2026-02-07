@@ -71,11 +71,26 @@ public class Dial : Control
 
     #endregion
 
+    #region RotationDirection StyledProperty
+
+    public static readonly StyledProperty<RotationDirection> RotationDirectionProperty = AvaloniaProperty.Register<Dial, RotationDirection>(
+        nameof(RotationDirection),
+        defaultValue: RotationDirection.Clockwise);
+
+    public RotationDirection RotationDirection
+    {
+        get => GetValue(RotationDirectionProperty);
+        set => SetValue(RotationDirectionProperty, value);
+    }
+
+    #endregion
+
     static Dial()
     {
         _ = ShapesProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.HandleShapesChanged(e));
         _ = KeepProportionsProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.HandleKeepProportionsChanged(e));
         _ = MovementProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.HandleMovementChanged(e));
+        _ = RotationDirectionProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.HandleRotationDirectionChnaged(e));
 
         AffectsRender<Dial>(ShapesProperty, KeepProportionsProperty, MovementProperty);
     }
@@ -142,6 +157,11 @@ public class Dial : Control
         }
     }
 
+    private void HandleRotationDirectionChnaged(AvaloniaPropertyChangedEventArgs e)
+    {
+        InvalidateVisual();
+    }
+
     public override void Render(DrawingContext drawingContext)
     {
         PerformanceMeter performanceInfo = PerformanceMeter;
@@ -184,7 +204,8 @@ public class Dial : Control
         {
             DrawingContext = drawingContext,
             ClockDiameter = diameter,
-            Time = time
+            Time = time,
+            ClockDirection = RotationDirection
         };
 
         foreach (Shape shape in Shapes)
