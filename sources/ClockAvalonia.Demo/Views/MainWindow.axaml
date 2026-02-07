@@ -22,14 +22,10 @@
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
 
-	<Viewbox>
 		<clockavalonia:AnalogClock
-			HorizontalAlignment="Center"
-			VerticalAlignment="Center"
-			Width="200"
-			Height="200"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
 			ClockTemplate="{Binding ClockTemplate}"
-			Movement="{Binding ClockMovement}"/>
-	</Viewbox>
+			Movement="{Binding ClockMovement}" />
 
 </Window>

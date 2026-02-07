@@ -82,11 +82,24 @@ public class AnalogClock : TemplatedControl
 
     #endregion
 
+    #region RotationDirection StyledProperty
+
+    public static readonly StyledProperty<RotationDirection> RotationDirectionProperty = AvaloniaProperty.Register<AnalogClock, RotationDirection>(
+        nameof(RotationDirection),
+        defaultValue: RotationDirection.Clockwise);
+
+    public RotationDirection RotationDirection
+    {
+        get => GetValue(RotationDirectionProperty);
+        set => SetValue(RotationDirectionProperty, value);
+    }
+
+    #endregion
+
     static AnalogClock()
     {
         ShapesProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.HandleShapesChanged(e));
         KeepProportionsProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.HandleKeepProportionsChanged(e));
-        MovementProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.HandleMovementChanged(e));
         ClockTemplateProperty.Changed.AddClassHandler<AnalogClock>((clock, e) => clock.HandleClockTemplateChanged(e));
     }
 
@@ -100,10 +113,6 @@ public class AnalogClock : TemplatedControl
         base.OnApplyTemplate(e);
 
         dial = e.NameScope.Find<Dial>("PART_Dial");
-
-        IMovement currentMovement = Movement;
-        if (currentMovement != null)
-            UpdateDisplayedTime(currentMovement.LastTick);
     }
 
     private void HandleShapesChanged(AvaloniaPropertyChangedEventArgs e)
@@ -133,18 +142,6 @@ public class AnalogClock : TemplatedControl
         dial?.InvalidateVisual();
     }
 
-    private void HandleMovementChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.OldValue is IMovement oldMovement)
-            oldMovement.Tick -= HandleTimeChanged;
-
-        if (e.NewValue is IMovement newMovement)
-        {
-            newMovement.Tick += HandleTimeChanged;
-            UpdateDisplayedTime(newMovement.LastTick);
-        }
-    }
-
     private void HandleClockTemplateChanged(AvaloniaPropertyChangedEventArgs e)
     {
         Shapes.Clear();
@@ -153,22 +150,6 @@ public class AnalogClock : TemplatedControl
         {
             foreach (Shape shape in clockTemplate)
                 Shapes.Add(shape);
-        }
-    }
-
-    private void HandleTimeChanged(object sender, TickEventArgs e)
-    {
-        UpdateDisplayedTime(e.Time);
-    }
-
-    private void UpdateDisplayedTime(TimeSpan time)
-    {
-        if (dial != null)
-        {
-            Dispatcher.UIThread.Post(() =>
-            {
-                dial.Time = time;
-            });
         }
     }
 }

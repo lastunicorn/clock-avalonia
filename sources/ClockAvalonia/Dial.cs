@@ -3,6 +3,8 @@ using System.Collections.Specialized;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Threading;
+using DustInTheWind.ClockAvalonia.Movements;
 using DustInTheWind.ClockAvalonia.Shapes;
 
 namespace DustInTheWind.ClockAvalonia;
@@ -10,6 +12,8 @@ namespace DustInTheWind.ClockAvalonia;
 public class Dial : Control
 {
     private NotifyCollectionChangedEventHandler collectionChangedHandler;
+
+    private TimeSpan time;
 
     #region Shapes StyledProperty
 
@@ -39,27 +43,27 @@ public class Dial : Control
 
     #endregion
 
-    #region Time StyledProperty
+    #region Movement StyledProperty
 
-    public static readonly StyledProperty<TimeSpan> TimeProperty = AvaloniaProperty.Register<Dial, TimeSpan>(
-        nameof(Time),
-        defaultValue: TimeSpan.Zero);
+    public static readonly StyledProperty<IMovement> MovementProperty = AvaloniaProperty.Register<Dial, IMovement>(
+        nameof(Movement),
+        defaultValue: null);
 
-    public TimeSpan Time
+    public IMovement Movement
     {
-        get => GetValue(TimeProperty);
-        set => SetValue(TimeProperty, value);
+        get => GetValue(MovementProperty);
+        set => SetValue(MovementProperty, value);
     }
 
     #endregion
 
     static Dial()
     {
-        ShapesProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.OnShapesChanged(e));
-        KeepProportionsProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.InvalidateVisual());
-        TimeProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.InvalidateVisual());
+        _ = ShapesProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.HandleShapesChanged(e));
+        _ = KeepProportionsProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.HandleKeepProportionsChanged(e));
+        _ = MovementProperty.Changed.AddClassHandler<Dial>((canvas, e) => canvas.HandleMovementChanged(e));
 
-        AffectsRender<Dial>(ShapesProperty, KeepProportionsProperty, TimeProperty);
+        AffectsRender<Dial>(ShapesProperty, KeepProportionsProperty, MovementProperty);
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -71,7 +75,7 @@ public class Dial : Control
         return new Size(size, size);
     }
 
-    private void OnShapesChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleShapesChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.OldValue is ObservableCollection<Shape> oldShapes && collectionChangedHandler != null)
         {
@@ -85,6 +89,42 @@ public class Dial : Control
             newShapes.CollectionChanged += collectionChangedHandler;
 
             InvalidateVisual();
+        }
+    }
+
+    private void HandleKeepProportionsChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        InvalidateVisual();
+    }
+
+    private void HandleMovementChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.OldValue is IMovement oldMovement)
+            oldMovement.Tick -= HandleTick;
+
+        if (e.NewValue is IMovement newMovement)
+        {
+            newMovement.Tick += HandleTick;
+
+            time = newMovement.LastTick;
+            InvalidateVisual();
+        }
+    }
+
+    private void HandleTick(object sender, TickEventArgs e)
+    {
+        time = e.Time;
+
+        try
+        {
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                InvalidateVisual();
+            });
+        }
+        catch (TaskCanceledException)
+        {
+            // Ignore
         }
     }
 
@@ -120,7 +160,7 @@ public class Dial : Control
         {
             DrawingContext = drawingContext,
             ClockDiameter = diameter,
-            Time = Time
+            Time = time
         };
 
         foreach (Shape shape in Shapes)
