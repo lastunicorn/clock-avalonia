@@ -4,7 +4,6 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using DustInTheWind.ClockAvalonia.Demo.ViewModels;
 using DustInTheWind.ClockAvalonia.Demo.Views;
-using DustInTheWind.ClockWpf.TemplateEditor;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DustInTheWind.ClockAvalonia.Demo;

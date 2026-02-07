@@ -2,7 +2,7 @@
 using DustInTheWind.ClockAvalonia.Templates;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DustInTheWind.ClockWpf.TemplateEditor;
+namespace DustInTheWind.ClockAvalonia.Demo;
 
 public class ClockTemplateFactory : IClockTemplateFactory
 {

@@ -2,7 +2,7 @@
 using DustInTheWind.ClockAvalonia.Movements;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DustInTheWind.ClockWpf.TemplateEditor;
+namespace DustInTheWind.ClockAvalonia.Demo;
 
 public class ClockMovementFactory : IClockMovementFactory
 {

@@ -6,7 +6,7 @@ using DustInTheWind.ClockAvalonia.Movements;
 using DustInTheWind.ClockAvalonia.Templates;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DustInTheWind.ClockWpf.TemplateEditor;
+namespace DustInTheWind.ClockAvalonia.Demo;
 
 internal static class Setup
 {
