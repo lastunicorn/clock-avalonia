@@ -22,6 +22,7 @@ public class Pin : Shape
     static Pin()
     {
         DiameterProperty.Changed.AddClassHandler<Pin>((pin, e) => pin.InvalidateCache());
+        StrokeThicknessProperty.OverrideDefaultValue<Pin>(0.0);
     }
 
     private Point pinCenter;

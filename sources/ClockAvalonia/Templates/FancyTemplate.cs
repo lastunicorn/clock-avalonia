@@ -11,9 +11,6 @@ public class FancyTemplate : ClockTemplate
 {
     protected override IEnumerable<Shape> CreateShapes()
     {
-        //LinearGradientBrush linearGradientBrush = new(Colors.WhiteSmoke, Colors.LightGray, 45);
-        //linearGradientBrush.GradientStops.Add(new GradientStop(Colors.WhiteSmoke, 0.5));
-
         GradientStops gradientStops =
         [
             new GradientStop(Colors.WhiteSmoke, 0),
@@ -57,7 +54,7 @@ public class FancyTemplate : ClockTemplate
             OffsetAngle = 30
         };
 
-        yield return new Hours
+        yield return new HourNumerals
         {
             Name = "Hour Numerals",
             DistanceFromEdge = 28,
@@ -100,7 +97,7 @@ public class FancyTemplate : ClockTemplate
             Name = "Pin",
             FillBrush = new SolidColorBrush(Color.FromRgb(0x64, 0x64, 0x64)),
             StrokeThickness = 0,
-            Diameter = 3
+            Diameter = 4
         };
     }
 }

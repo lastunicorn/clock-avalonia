@@ -1,5 +1,7 @@
 using Avalonia;
 using Avalonia.Media;
+using DustInTheWind.ClockAvalonia.Utils;
+using DustInTheWind.ClockWpf.Utils;
 
 namespace DustInTheWind.ClockAvalonia.Shapes;
 
@@ -36,22 +38,7 @@ public class FancyBackground : Shape
     #region OuterRimBrush StyledProperty
 
     public static readonly StyledProperty<IBrush> OuterRimBrushProperty = AvaloniaProperty.Register<FancyBackground, IBrush>(
-        nameof(OuterRimBrush),
-        defaultValue: CreateDefaultOuterRimBrush());
-
-    private static IBrush CreateDefaultOuterRimBrush()
-    {
-        LinearGradientBrush brush = new()
-        {
-            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-            EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative)
-        };
-
-        brush.GradientStops.Add(new GradientStop(Color.FromRgb(155, 219, 255), 0));
-        brush.GradientStops.Add(new GradientStop(Color.FromRgb(0, 64, 128), 1));
-
-        return brush;
-    }
+        nameof(OuterRimBrush));
 
     public IBrush OuterRimBrush
     {
@@ -63,23 +50,8 @@ public class FancyBackground : Shape
 
     #region InnerRimBrush StyledProperty
 
-    public static readonly StyledProperty<IBrush?> InnerRimBrushProperty = AvaloniaProperty.Register<FancyBackground, IBrush>(
-        nameof(InnerRimBrush),
-        defaultValue: CreateDefaultInnerRimBrush());
-
-    private static IBrush CreateDefaultInnerRimBrush()
-    {
-        LinearGradientBrush brush = new()
-        {
-            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-            EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative)
-        };
-
-        brush.GradientStops.Add(new GradientStop(Color.FromRgb(0, 64, 128), 0));
-        brush.GradientStops.Add(new GradientStop(Color.FromRgb(155, 219, 255), 1));
-
-        return brush;
-    }
+    public static readonly StyledProperty<IBrush> InnerRimBrushProperty = AvaloniaProperty.Register<FancyBackground, IBrush>(
+        nameof(InnerRimBrush));
 
     public IBrush InnerRimBrush
     {
@@ -89,15 +61,107 @@ public class FancyBackground : Shape
 
     #endregion
 
-    static FancyBackground()
+    #region FillColor StyledProperty
+
+    public static readonly StyledProperty<Color> FillColorProperty = AvaloniaProperty.Register<FancyBackground, Color>(
+        nameof(FillColor),
+        Colors.Black);
+
+    public Color FillColor
     {
-        FillBrushProperty.OverrideDefaultValue<FancyBackground>(CreateDefaultFaceBrush());
-        StrokeThicknessProperty.OverrideDefaultValue<FancyBackground>(0.0);
+        get => GetValue(FillColorProperty);
+        set => SetValue(FillColorProperty, value);
     }
 
-    private Pen strokePen;
+    #endregion
 
-    private static IBrush CreateDefaultFaceBrush()
+    static FancyBackground()
+    {
+        FillBrushProperty.OverrideDefaultValue<FancyBackground>((Brush)null);
+        StrokeThicknessProperty.OverrideDefaultValue<FancyBackground>(0.0);
+
+        OuterRimWidthProperty.Changed.AddClassHandler<FancyBackground>(HandleOuterRimWidthChanged);
+        InnerRimWidthProperty.Changed.AddClassHandler<FancyBackground>(HandleInnerRimWidthChanged);
+        OuterRimBrushProperty.Changed.AddClassHandler<FancyBackground>(HandleOuterRimBrushChanged);
+        InnerRimBrushProperty.Changed.AddClassHandler<FancyBackground>(HandleInnerRimBrushChanged);
+        FillColorProperty.Changed.AddClassHandler<FancyBackground>(HandleFillColorChanged);
+    }
+
+    private static void HandleOuterRimWidthChanged(FancyBackground fancyBackground, AvaloniaPropertyChangedEventArgs e)
+    {
+        fancyBackground.InvalidateCache();
+        fancyBackground.OnChanged(EventArgs.Empty);
+    }
+
+    private static void HandleInnerRimWidthChanged(FancyBackground fancyBackground, AvaloniaPropertyChangedEventArgs e)
+    {
+        fancyBackground.InvalidateCache();
+        fancyBackground.OnChanged(EventArgs.Empty);
+    }
+
+    private static void HandleOuterRimBrushChanged(FancyBackground fancyBackground, AvaloniaPropertyChangedEventArgs e)
+    {
+        fancyBackground.generateBrushesFromColor = false;
+        fancyBackground.InvalidateCache();
+        fancyBackground.OnChanged(EventArgs.Empty);
+    }
+
+    private static void HandleInnerRimBrushChanged(FancyBackground fancyBackground, AvaloniaPropertyChangedEventArgs e)
+    {
+        fancyBackground.generateBrushesFromColor = false;
+        fancyBackground.InvalidateCache();
+        fancyBackground.OnChanged(EventArgs.Empty);
+    }
+
+    private static void HandleFillColorChanged(FancyBackground fancyBackground, AvaloniaPropertyChangedEventArgs e)
+    {
+        fancyBackground.generateBrushesFromColor = false;
+        fancyBackground.InvalidateCache();
+        fancyBackground.OnChanged(EventArgs.Empty);
+    }
+
+    private bool generateBrushesFromColor = true;
+    private double calculatedOuterRimRadius;
+    private double calculatedInnerRimRadius;
+    private double calculatedFaceRadius;
+    private IBrush calculatedOuterRimBrush;
+    private IBrush calculatedInnerRimBrush;
+    private IBrush calculatedFaceBrush;
+
+    protected override bool OnRendering(ClockDrawingContext context)
+    {
+        return true;
+    }
+
+    protected override void CalculateCache(ClockDrawingContext context)
+    {
+        base.CalculateCache(context);
+
+        double clockRadius = context.ClockRadius;
+
+        calculatedOuterRimRadius = clockRadius;
+
+        double calculatedOuterRimWidth = OuterRimWidth.RelativeTo(clockRadius);
+        calculatedInnerRimRadius = clockRadius - calculatedOuterRimWidth;
+
+        double calculatedInnerRimWidth = InnerRimWidth.RelativeTo(clockRadius);
+        calculatedFaceRadius = calculatedInnerRimRadius - calculatedInnerRimWidth;
+
+        if (generateBrushesFromColor)
+        {
+            calculatedOuterRimBrush = CreateDefaultOuterRimBrush(FillColor);
+            calculatedInnerRimBrush = CreateDefaultInnerRimBrush(FillColor);
+            calculatedFaceBrush = CreateDefaultFaceBrush(FillColor);
+        }
+        else
+        {
+            calculatedOuterRimBrush = OuterRimBrush;
+            calculatedInnerRimBrush = InnerRimBrush;
+            calculatedFaceBrush = FillBrush;
+        }
+    }
+
+    private static IBrush CreateDefaultOuterRimBrush(Color color)
     {
         LinearGradientBrush brush = new()
         {
@@ -105,45 +169,46 @@ public class FancyBackground : Shape
             EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative)
         };
 
-        brush.GradientStops.Add(new GradientStop(Color.FromRgb(200, 230, 255), 0));
-        brush.GradientStops.Add(new GradientStop(Color.FromRgb(50, 100, 150), 1));
+        brush.GradientStops.Add(new GradientStop(color.ShiftBrighness(100f), 0));
+        brush.GradientStops.Add(new GradientStop(color.ShiftBrighness(-100f), 1));
 
         return brush;
     }
 
-    protected override bool OnRendering(ClockDrawingContext context)
+    private static IBrush CreateDefaultInnerRimBrush(Color color)
     {
-        if (OuterRimBrush == null && InnerRimBrush == null && FillBrush == null)
-            return false;
+        LinearGradientBrush brush = new()
+        {
+            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+            EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative)
+        };
 
-        return base.OnRendering(context);
+        brush.GradientStops.Add(new GradientStop(color.ShiftBrighness(-100f), 0));
+        brush.GradientStops.Add(new GradientStop(color.ShiftBrighness(100f), 1));
+
+        return brush;
     }
 
-    protected override void CalculateCache(ClockDrawingContext context)
+    private static IBrush CreateDefaultFaceBrush(Color color)
     {
-        base.CalculateCache(context);
+        LinearGradientBrush brush = new()
+        {
+            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+            EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative)
+        };
 
-        strokePen = CreateStrokePen();
+        brush.GradientStops.Add(new GradientStop(color.ShiftBrighness(100f), 0));
+        brush.GradientStops.Add(new GradientStop(color.ShiftBrighness(-100f), 1));
+
+        return brush;
     }
 
     protected override void DoRender(ClockDrawingContext context)
     {
         Point center = new(0, 0);
-        double clockRadius = context.ClockRadius;
 
-        double calculatedOuterRimWidth = clockRadius * (OuterRimWidth / 100);
-        double innerRimRadius = clockRadius - calculatedOuterRimWidth;
-
-        double calculatedInnerRimWidth = clockRadius * (InnerRimWidth / 100);
-        double faceRadius = innerRimRadius - calculatedInnerRimWidth;
-
-        if (OuterRimBrush != null)
-            context.DrawingContext.DrawEllipse(OuterRimBrush, null, center, clockRadius, clockRadius);
-
-        if (InnerRimBrush != null)
-            context.DrawingContext.DrawEllipse(InnerRimBrush, null, center, innerRimRadius, innerRimRadius);
-
-        if (FillBrush != null)
-            context.DrawingContext.DrawEllipse(FillBrush, strokePen, center, faceRadius, faceRadius);
+        context.DrawingContext.DrawEllipse(calculatedOuterRimBrush, null, center, calculatedOuterRimRadius, calculatedOuterRimRadius);
+        context.DrawingContext.DrawEllipse(calculatedInnerRimBrush, null, center, calculatedInnerRimRadius, calculatedInnerRimRadius);
+        context.DrawingContext.DrawEllipse(calculatedFaceBrush, null, center, calculatedFaceRadius, calculatedFaceRadius);
     }
 }

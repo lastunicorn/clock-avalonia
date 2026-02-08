@@ -20,7 +20,7 @@ public class PandaTemplate : ClockTemplate
             Name = "Hour Hand",
             TimeComponent = TimeComponent.Hour,
             Length = 50,
-            Radius = 20,
+            Radius = 25,
             FillBrush = Brushes.Black,
             StrokeBrush = new SolidColorBrush(Color.FromRgb(0x64, 0x64, 0x64)),
             StrokeThickness = 1
@@ -30,19 +30,11 @@ public class PandaTemplate : ClockTemplate
         {
             Name = "Minute Hand",
             TimeComponent = TimeComponent.Minute,
-            Length = 60,
-            Radius = 12,
+            Length = 50,
+            Radius = 15,
             FillBrush = Brushes.Black,
             StrokeBrush = new SolidColorBrush(Color.FromRgb(0x64, 0x64, 0x64)),
             StrokeThickness = 1
-        };
-
-        yield return new Pin
-        {
-            Name = "Pin",
-            Diameter = 4,
-            FillBrush = Brushes.Black,
-            StrokeThickness = 0
         };
     }
 }

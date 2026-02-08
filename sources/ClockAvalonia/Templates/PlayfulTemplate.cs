@@ -16,7 +16,7 @@ public class PlayfulTemplate : ClockTemplate
         {
             Name = "Minute Ticks",
             SkipIndex = 5,
-            Length = 3,
+            Length = 4,
             DistanceFromEdge = 6,
             RoundEnds = true,
             StrokeBrush = new SolidColorBrush(Color.FromRgb(0x60, 0x60, 0x60))
@@ -28,13 +28,13 @@ public class PlayfulTemplate : ClockTemplate
             Angle = 30,
             OffsetAngle = 30,
             StrokeThickness = 2,
-            Length = 6,
+            Length = 8,
             DistanceFromEdge = 7.5,
             RoundEnds = true,
             StrokeBrush = new SolidColorBrush(Color.FromRgb(0x40, 0x40, 0x40))
         };
 
-        yield return new Hours
+        yield return new HourNumerals
         {
             Name = "Hour Numerals",
             FontFamily = new FontFamily("Arial Rounded MT"),
@@ -45,7 +45,7 @@ public class PlayfulTemplate : ClockTemplate
         {
             Name = "Hour Hand",
             TimeComponent = TimeComponent.Hour,
-            Length = 48,
+            Length = 55,
             Width = 10,
             TailLength = -18,
             StrokeThickness = 0,
@@ -56,7 +56,7 @@ public class PlayfulTemplate : ClockTemplate
         {
             Name = "Minute Hand",
             TimeComponent = TimeComponent.Minute,
-            Length = 80,
+            Length = 84,
             Width = 8,
             TailLength = -18,
             StrokeThickness = 0,
@@ -68,9 +68,10 @@ public class PlayfulTemplate : ClockTemplate
             Name = "Second Hand",
             TimeComponent = TimeComponent.Second,
             Length = 84,
-            TailLength = -19,
+            TailLength = -18,
             StrokeBrush = Brushes.Red,
-            StrokeThickness = 1
+            StrokeThickness = 1,
+            RoundEnds = true
         };
 
         yield return new Pin()

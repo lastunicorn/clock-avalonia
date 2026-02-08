@@ -40,6 +40,7 @@ public class Ticks : RimBase
         OffsetAngleProperty.OverrideDefaultValue<Ticks>(6.0);
         DistanceFromEdgeProperty.OverrideDefaultValue<Ticks>(6.0);
         OrientationProperty.OverrideDefaultValue<Ticks>(RimItemOrientation.FaceIn);
+
         RoundEndsProperty.Changed.AddClassHandler<Ticks>((ticks, e) => ticks.InvalidateCache());
     }
 

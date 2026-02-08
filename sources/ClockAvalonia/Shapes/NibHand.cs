@@ -33,6 +33,17 @@ public class NibHand : HandBase
 
     #endregion
 
+    static NibHand()
+    {
+        WidthProperty.Changed.AddClassHandler<NibHand>(HandleWidthChanged);
+    }
+
+    private static void HandleWidthChanged(NibHand hand, AvaloniaPropertyChangedEventArgs args)
+    {
+        hand.InvalidateCache();
+        hand.OnChanged(EventArgs.Empty);
+    }
+
     private PathGeometry nibGeometry;
     private Pen strokePen;
 

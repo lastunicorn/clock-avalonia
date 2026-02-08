@@ -24,7 +24,7 @@ public class TextRim : RimBase
 
     public static readonly StyledProperty<FontFamily> FontFamilyProperty = AvaloniaProperty.Register<TextRim, FontFamily>(
         nameof(FontFamily),
-        defaultValue: FontFamily.Default);
+        defaultValue: new FontFamily("Arial"));
 
     public FontFamily FontFamily
     {
