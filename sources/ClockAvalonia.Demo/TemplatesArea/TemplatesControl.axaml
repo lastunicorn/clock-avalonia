@@ -1,0 +1,151 @@
+<UserControl
+	x:Class="DustInTheWind.ClockAvalonia.Demo.TemplatesArea.TemplatesControl"
+
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:templatesArea="using:DustInTheWind.ClockAvalonia.Demo.TemplatesArea"
+	
+	mc:Ignorable="d"
+	d:DesignWidth="800"
+	d:DesignHeight="450"
+	x:DataType="templatesArea:TemplatesViewModel">
+	
+	<Design.DataContext>
+		<templatesArea:TemplatesViewModel/>
+	</Design.DataContext>
+
+	<Grid
+        Grid.Column="2">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="300"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel
+            Grid.Row="0"
+            Margin="0 10 0 0">
+
+            <DockPanel
+                DockPanel.Dock="Top">
+
+                <Button
+                    DockPanel.Dock="Right"
+                    Content="Load"
+                    Padding="10 0"
+                    Margin="5 0 0 0"
+                    IsEnabled="False" />
+
+                <Button
+                    DockPanel.Dock="Right"
+                    Content="Export"
+                    Padding="10 0"
+                    Margin="5 0 0 0"
+                    Command="{Binding SaveTemplateCommand}" />
+
+                <Button
+                    DockPanel.Dock="Right"
+                    Content="Reset"
+                    Padding="10 0"
+                    Margin="8 0 0 0"
+                    Command="{Binding ResetTemplateCommand}" />
+
+                <ComboBox
+                    ItemsSource="{Binding TemplateTypes}"
+                    SelectedItem="{Binding SelectedTemplateType}"
+                    HorizontalAlignment="Stretch">
+
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+
+                </ComboBox>
+                
+            </DockPanel>
+
+            <DockPanel
+                DockPanel.Dock="Top"
+                Margin="0 10 0 0">
+
+                <Button
+                    DockPanel.Dock="Right"
+                    Content="+"
+                    Padding="5 0"
+                    IsEnabled="False" />
+
+                <TextBlock
+                    Text="Shapes"
+                    FontWeight="Bold"/>
+
+            </DockPanel>
+            
+            <ListBox
+                Grid.Row="0"
+                Margin="0 2 0 0"
+                ItemsSource="{Binding Shapes, Mode=OneWay}"
+                SelectedItem="{Binding SelectedShape}">
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="0 1">
+                            <StackPanel>
+                            
+                                <TextBlock
+                                    Text="{Binding Name, Mode=OneWay}"
+                                    FontWeight="DemiBold"/>
+
+                                <TextBlock
+                                    Text="{Binding Mode=OneWay}"
+                                    FontSize="11"
+                                    Foreground="Gray"
+                                    Margin="10 0 0 0"/>
+                            
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+            </ListBox>
+
+        </DockPanel>
+
+        <GridSplitter
+            Grid.Row="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Height="10">
+
+            <GridSplitter.Template>
+                <ControlTemplate TargetType="{x:Type GridSplitter}">
+                    <Grid Background="Transparent">
+
+                        <Ellipse
+                            Width="55"
+                            Height="2"
+                            Fill="Gray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                        
+                    </Grid>
+                </ControlTemplate>
+            </GridSplitter.Template>
+
+        </GridSplitter>
+
+        <!--<xctk:PropertyGrid
+            Grid.Row="2"
+            SelectedObject="{Binding SelectedShape, Mode=OneWay}"
+            ShowSortOptions="True"
+            ShowSearchBox="True"
+            ShowSummary="True"
+            ShowAdvancedOptions="True"
+            BorderThickness="0"/>-->
+
+    </Grid>
+
+</UserControl>

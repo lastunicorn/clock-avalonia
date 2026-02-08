@@ -2,8 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using DustInTheWind.ClockAvalonia.Demo.ViewModels;
-using DustInTheWind.ClockAvalonia.Demo.Views;
+using DustInTheWind.ClockAvalonia.Demo.MainArea;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DustInTheWind.ClockAvalonia.Demo;

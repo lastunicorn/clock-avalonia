@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace DustInTheWind.ClockAvalonia.Demo.Views;
+namespace DustInTheWind.ClockAvalonia.Demo.MainArea;
 
 public partial class MainWindow : Window
 {

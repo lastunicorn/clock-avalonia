@@ -1,7 +1,7 @@
-﻿using DustInTheWind.ClockAvalonia.Demo.Miscellaneous;
+﻿using DustInTheWind.ClockAvalonia.Demo.MainArea;
+using DustInTheWind.ClockAvalonia.Demo.MiscellaneousArea;
 using DustInTheWind.ClockAvalonia.Demo.State;
-using DustInTheWind.ClockAvalonia.Demo.ViewModels;
-using DustInTheWind.ClockAvalonia.Demo.Views;
+using DustInTheWind.ClockAvalonia.Demo.TemplatesArea;
 using DustInTheWind.ClockAvalonia.Movements;
 using DustInTheWind.ClockAvalonia.Templates;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +23,7 @@ internal static class Setup
         serviceCollection.AddTransient<MainWindow>();
         serviceCollection.AddTransient<MainWindowViewModel>();
 
+        serviceCollection.AddTransient<TemplatesViewModel>();
         serviceCollection.AddTransient<MiscellaneousViewModel>();
 
         serviceCollection.AddTransient<AppInitializationUseCase>();

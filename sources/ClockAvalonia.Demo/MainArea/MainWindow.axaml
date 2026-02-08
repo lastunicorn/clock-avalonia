@@ -1,18 +1,19 @@
 <Window
-	x:Class="DustInTheWind.ClockAvalonia.Demo.Views.MainWindow"
+	x:Class="DustInTheWind.ClockAvalonia.Demo.MainArea.MainWindow"
 
 	xmlns="https://github.com/avaloniaui"
 	xmlns:clockavalonia="using:DustInTheWind.ClockAvalonia"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:vm="using:DustInTheWind.ClockAvalonia.Demo.ViewModels"
+	xmlns:mainArea="using:DustInTheWind.ClockAvalonia.Demo.MainArea"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:miscellaneous="using:DustInTheWind.ClockAvalonia.Demo.Miscellaneous"
+	xmlns:templatesArea="using:DustInTheWind.ClockAvalonia.Demo.TemplatesArea"
+	xmlns:miscellaneousArea="using:DustInTheWind.ClockAvalonia.Demo.MiscellaneousArea"
 
 	mc:Ignorable="d"
 	d:DesignWidth="500"
 	d:DesignHeight="500"
-	x:DataType="vm:MainWindowViewModel"
+	x:DataType="mainArea:MainWindowViewModel"
 	Icon="/Assets/avalonia-logo.ico"
 	Title="Clock Avalonia Demo"
 	Background="Black"
@@ -24,7 +25,7 @@
 		This only sets the DataContext for the previewer in an IDE,
 		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs)
 		-->
-		<vm:MainWindowViewModel/>
+		<mainArea:MainWindowViewModel/>
 	</Design.DataContext>
 
 	<Grid>
@@ -55,7 +56,7 @@
             Margin="10">
 
             <TabItem Header="Templates" IsSelected="True">
-                <!--<templates:TemplatesControl DataContext="{Binding TemplatesViewModel}"/>-->
+                <templatesArea:TemplatesControl DataContext="{Binding TemplatesViewModel}"/>
             </TabItem>
 
             <TabItem Header="Shapes">
@@ -67,7 +68,7 @@
             </TabItem>
 
             <TabItem Header="Misc">
-                <miscellaneous:MiscellaneousControl DataContext="{Binding MiscellaneousViewModel}"/>
+                <miscellaneousArea:MiscellaneousControl DataContext="{Binding MiscellaneousViewModel}"/>
             </TabItem>
 
         </TabControl>

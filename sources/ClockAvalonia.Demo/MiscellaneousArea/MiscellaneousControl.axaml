@@ -1,25 +1,25 @@
 <UserControl
-	x:Class="DustInTheWind.ClockAvalonia.Demo.Miscellaneous.MiscellaneousControl"
+	x:Class="DustInTheWind.ClockAvalonia.Demo.MiscellaneousArea.MiscellaneousControl"
 	
 	xmlns="https://github.com/avaloniaui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:miscellaneous="using:DustInTheWind.ClockAvalonia.Demo.Miscellaneous"
+	xmlns:miscellaneousArea="using:DustInTheWind.ClockAvalonia.Demo.MiscellaneousArea"
     xmlns:local="using:DustInTheWind.ClockAvalonia.Demo"
     xmlns:shapes="using:DustInTheWind.ClockAvalonia.Shapes"
 
 	mc:Ignorable="d"
 	d:DesignWidth="800"
 	d:DesignHeight="450"
-	x:DataType="miscellaneous:MiscellaneousViewModel">
+	x:DataType="miscellaneousArea:MiscellaneousViewModel">
 	
     <UserControl.Resources>
         <local:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
     </UserControl.Resources>
     
 	<Design.DataContext>
-		<miscellaneous:MiscellaneousViewModel/>
+		<miscellaneousArea:MiscellaneousViewModel/>
 	</Design.DataContext>
 
 	<Grid Margin="0 10 0 0">

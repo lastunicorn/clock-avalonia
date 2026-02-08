@@ -12,6 +12,7 @@
 	<ItemGroup>
 		<Folder Include="Models\" />
 		<AvaloniaResource Include="Assets\**" />
+		<Folder Include="Views\" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -33,7 +34,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Miscellaneous\MiscellaneousControl.axaml.cs">
+	  <Compile Update="MiscellaneousArea\MiscellaneousControl.axaml.cs">
 	    <DependentUpon>MiscellaneousControl.axaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>

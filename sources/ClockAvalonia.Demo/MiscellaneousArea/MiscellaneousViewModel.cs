@@ -2,7 +2,7 @@ using DustInTheWind.ClockAvalonia.Demo.State;
 using DustInTheWind.ClockAvalonia.Demo.ViewModels;
 using DustInTheWind.ClockAvalonia.Shapes;
 
-namespace DustInTheWind.ClockAvalonia.Demo.Miscellaneous;
+namespace DustInTheWind.ClockAvalonia.Demo.MiscellaneousArea;
 
 public class MiscellaneousViewModel : ViewModelBase
 {
