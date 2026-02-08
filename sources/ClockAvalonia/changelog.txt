@@ -6,6 +6,7 @@ Ver 1.1.0
 [new   ] Added StaticMovement that displays a fixed time value.
 [change] Multiple refactorings and renames. (breaking changes)
 [new   ] Added support for counterclockwise clock.
+[new   ] Added clock templates: Sharp, Peephole, Default Black, Bob, Blade, Blade2
 
 
 Ver 1.0.0
