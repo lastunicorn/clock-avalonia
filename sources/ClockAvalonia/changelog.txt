@@ -3,7 +3,7 @@ Clock Avalonia
 
 Ver 1.2.0
 ----------------------------------------------------------------------------------------------------
-
+[bugfix] Fixed the default background of the AnalogClock control.
 
 
 Ver 1.1.0
